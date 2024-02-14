@@ -36,7 +36,7 @@ const Modal = ({
       setPatchDataState(patchData);
       return;
     }
-  }, [state]);
+  }, []);
 
   return (
     <Frame className={state ? "slideUp" : "slideDown"}>

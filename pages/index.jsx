@@ -49,12 +49,18 @@ const Home = () => {
   };
 
   // get excel
-  const { data: excelData, refetch: getExcelRefetch } = useGetExcel({
+  const {
+    data: excelData,
+    refetch: getExcelRefetch,
+    isLoading: excelIsLoading,
+  } = useGetExcel({
     status: statusFilter,
     company: companyFilter,
     startStocks: stocks.start,
     endStocks: stocks.end,
   });
+
+  // console.log(excelIsLoading);
 
   // get filter menu
   const { data: filterMenu, refetch: getFilterMenuRefetch } =
@@ -93,7 +99,7 @@ const Home = () => {
 
   return (
     <>
-      {filterisLoading && (
+      {excelIsLoading && (
         <SpinnerFrame>
           <GlobalSpinner
             width={18}
@@ -122,19 +128,23 @@ const Home = () => {
           <FilterWrapper>
             {filterMenu?.statusMenu?.map((x) => {
               return (
-                <FilterLabel key={x} htmlFor="status-checkbox">
-                  <input
-                    type="checkbox"
-                    value={x}
-                    id="status-checkbox"
-                    name="status-checkbox"
-                    onChange={(e) =>
-                      handleCheckboxChange(e, statusFilter, setStatusFilter)
-                    }
-                    checked={statusFilter.includes(x)}
-                  />
-                  {x}
-                </FilterLabel>
+                <li key={x}>
+                  <FilterLabel htmlFor={`status${x}`}>
+                    <input
+                      type="checkbox"
+                      value={x}
+                      id={`status${x}`}
+                      name={`status${x}`}
+                      onChange={(e) => {
+                        handleCheckboxChange(e, statusFilter, setStatusFilter);
+                        e.preventDefault();
+                      }}
+                      checked={statusFilter.includes(x)}
+                    />
+
+                    {x}
+                  </FilterLabel>
+                </li>
               );
             })}
           </FilterWrapper>
@@ -146,19 +156,26 @@ const Home = () => {
           <FilterWrapper>
             {filterMenu?.companyMenu?.map((x) => {
               return (
-                <FilterLabel key={x} htmlFor="company-checkbox">
-                  <input
-                    type="checkbox"
-                    value={x}
-                    id="company-checkbox"
-                    name="company-checkbox"
-                    onChange={(e) =>
-                      handleCheckboxChange(e, companyFilter, setCompanyFilter)
-                    }
-                    checked={companyFilter.includes(x)}
-                  />
-                  {x}
-                </FilterLabel>
+                <li key={x}>
+                  <FilterLabel htmlFor={`company${x}`}>
+                    <input
+                      type="checkbox"
+                      value={x}
+                      id={`company${x}`}
+                      name={`company${x}`}
+                      onChange={(e) => {
+                        handleCheckboxChange(
+                          e,
+                          companyFilter,
+                          setCompanyFilter
+                        );
+                        e.preventDefault();
+                      }}
+                      checked={companyFilter.includes(x)}
+                    />
+                    {x}
+                  </FilterLabel>
+                </li>
               );
             })}
           </FilterWrapper>
@@ -245,7 +262,7 @@ const FilterFrame = styled.div`
   height: 20rem;
 `;
 
-const FilterWrapper = styled.div`
+const FilterWrapper = styled.ul`
   display: flex;
   align-items: center;
   gap: 1rem;
