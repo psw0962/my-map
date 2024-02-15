@@ -10,6 +10,17 @@ const ExcelImport = () => {
   // submit state
   // const [excelData, setExcelData] = useState(null);
 
+  //   const login = async () => {
+  //     await supabase.auth.signInWithPassword({
+  //       email: "",
+  //       password: "",
+  //     });
+  //   };
+
+  //   useEffect(() => {
+  //     login();
+  //   }, []);
+
   // onchange event
   const handleFile = (e) => {
     let fileTypes = [

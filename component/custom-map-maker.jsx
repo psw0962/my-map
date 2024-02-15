@@ -34,12 +34,7 @@ const CustomMapMarker = ({ patchData, userId }) => {
           />
         </SpinnerFrame>
       )}
-      <Modal
-        state={isModalOpen}
-        setState={setIsModalOpen}
-        setPatchDataState={setPatchDataState}
-        patchData={patchData}
-      >
+      <Modal state={isModalOpen} setState={setIsModalOpen}>
         <InfoWrapper>
           <Font fontSize="2rem">상태 :</Font>
 

@@ -5,14 +5,7 @@ import Image from "next/image";
 import ImageWrapper from "./image-wrapper";
 import close from "@/public/svg/close.svg";
 
-const Modal = ({
-  state,
-  setState,
-  isOverflow,
-  setPatchDataState,
-  patchData,
-  children,
-}) => {
+const Modal = ({ state, setState, isOverflow, children }) => {
   const moodalOpenInRef = useRef();
   const modalOpenExceptRef = useRef();
   useOnClickOutside({
@@ -31,13 +24,6 @@ const Modal = ({
     }
   }, [state]);
 
-  useEffect(() => {
-    if (setPatchDataState) {
-      setPatchDataState(patchData);
-      return;
-    }
-  }, []);
-
   return (
     <Frame className={state ? "slideUp" : "slideDown"}>
       <DialogFrame
@@ -52,10 +38,6 @@ const Modal = ({
             cursor="pointer"
             onClick={() => {
               setState(false);
-
-              if (setPatchDataState) {
-                setPatchDataState(patchData);
-              }
             }}
           >
             <Image

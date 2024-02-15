@@ -12,7 +12,6 @@ import Font from "@/component/font";
 import Modal from "@/component/modal";
 import GlobalSpinner from "@/component/global-spinner";
 import styled from "styled-components";
-import supabase from "@/config/supabaseClient";
 
 const Home = () => {
   const { data: user } = useGetUserInfo();
@@ -20,33 +19,16 @@ const Home = () => {
   // 필터 모달
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  // 필터 로딩 상태
-  const [filterisLoading, setFilterIsLoading] = useState(false);
-
   // 위도, 경도
   const [points, setPoints] = useState([]);
 
-  // 필터 상태
+  // 필터 선택 상태
   const [statusFilter, setStatusFilter] = useState([]);
   const [companyFilter, setCompanyFilter] = useState([]);
   const [stocks, setStocks] = useState({
     start: "",
     end: "",
   });
-
-  // 체크박스 핸들러
-  const handleCheckboxChange = (e, state, setState) => {
-    const value = e.target.value;
-    const isChecked = e.target.checked;
-
-    const index = state.indexOf(value);
-
-    if (isChecked && index === -1) {
-      setState((prev) => [...prev, value]);
-    } else if (!isChecked && index !== -1) {
-      setState((prev) => prev.filter((item) => item !== value));
-    }
-  };
 
   // get excel
   const {
@@ -59,8 +41,6 @@ const Home = () => {
     startStocks: stocks.start,
     endStocks: stocks.end,
   });
-
-  // console.log(excelIsLoading);
 
   // get filter menu
   const { data: filterMenu, refetch: getFilterMenuRefetch } =
@@ -80,22 +60,6 @@ const Home = () => {
 
     setPoints(latLng);
   }, [excelData]);
-
-  // get excel refetch
-  //   useEffect(() => {
-  //     getExcelRefetch();
-  //   }, [statusFilter, companyFilter]);
-
-  //   const login = async () => {
-  //     await supabase.auth.signInWithPassword({
-  //       email: "",
-  //       password: "",
-  //     });
-  //   };
-
-  //   useEffect(() => {
-  //     login();
-  //   }, []);
 
   return (
     <>
@@ -127,19 +91,25 @@ const Home = () => {
 
           <FilterWrapper>
             {filterMenu?.statusMenu?.map((x) => {
+              const isExist = statusFilter?.find((y) => y === x);
+
               return (
                 <li key={x}>
-                  <FilterLabel htmlFor={`status${x}`}>
+                  <FilterLabel>
                     <input
                       type="checkbox"
-                      value={x}
                       id={`status${x}`}
                       name={`status${x}`}
                       onChange={(e) => {
-                        handleCheckboxChange(e, statusFilter, setStatusFilter);
-                        e.preventDefault();
+                        if (isExist) {
+                          setStatusFilter(() =>
+                            statusFilter.filter((k) => k !== x)
+                          );
+                        } else {
+                          setStatusFilter((prev) => [...prev, e.target.value]);
+                        }
                       }}
-                      checked={statusFilter.includes(x)}
+                      checked={isExist}
                     />
 
                     {x}
@@ -155,23 +125,25 @@ const Home = () => {
 
           <FilterWrapper>
             {filterMenu?.companyMenu?.map((x) => {
+              const isExist = companyFilter?.find((y) => y === x);
+
               return (
                 <li key={x}>
                   <FilterLabel htmlFor={`company${x}`}>
                     <input
                       type="checkbox"
-                      value={x}
                       id={`company${x}`}
                       name={`company${x}`}
                       onChange={(e) => {
-                        handleCheckboxChange(
-                          e,
-                          companyFilter,
-                          setCompanyFilter
-                        );
-                        e.preventDefault();
+                        if (isExist) {
+                          setCompanyFilter(() =>
+                            companyFilter.filter((k) => k !== x)
+                          );
+                        } else {
+                          setCompanyFilter((prev) => [...prev, e.target.value]);
+                        }
                       }}
-                      checked={companyFilter.includes(x)}
+                      checked={isExist}
                     />
                     {x}
                   </FilterLabel>
@@ -227,8 +199,10 @@ const Home = () => {
       <Map
         center={{
           // 지도의 중심좌표
-          lat: 33.450701,
-          lng: 126.570667,
+          // lat: 33.450701,
+          // lng: 126.570667,
+          lat: 37.552839406975586,
+          lng: 126.97228481049244,
         }}
         style={{
           // 지도의 크기
@@ -242,7 +216,7 @@ const Home = () => {
         <ZoomControl position={"RIGHT"} />
 
         {/* 마커 갯수 기반 동적 현재 커서 위치 이동 */}
-        {points.length > 0 && <ReSetttingMapBounds points={points} />}
+        {/* {points.length > 0 && <ReSetttingMapBounds points={points} />} */}
 
         {/* 마커 생성 */}
         {excelData?.map((x) => {
