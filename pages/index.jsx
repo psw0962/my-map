@@ -186,7 +186,10 @@ const Home = () => {
 
           <Font
             fontSize="2rem"
-            onClick={() => getExcelRefetch()}
+            onClick={() => {
+              getExcelRefetch();
+              setIsFilterModalOpen(false);
+            }}
             margin="6rem 0 0 0"
             cursor="pointer"
           >
