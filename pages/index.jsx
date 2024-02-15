@@ -91,7 +91,7 @@ const Home = () => {
 
           <FilterWrapper>
             {filterMenu?.statusMenu?.map((x) => {
-              const isExist = statusFilter?.find((y) => y === x);
+              const isExist = statusFilter?.find((y) => y === x) || false;
 
               return (
                 <li key={x}>
@@ -106,7 +106,7 @@ const Home = () => {
                             statusFilter.filter((k) => k !== x)
                           );
                         } else {
-                          setStatusFilter((prev) => [...prev, e.target.value]);
+                          setStatusFilter((prev) => [...prev, x]);
                         }
                       }}
                       checked={isExist}
@@ -125,7 +125,7 @@ const Home = () => {
 
           <FilterWrapper>
             {filterMenu?.companyMenu?.map((x) => {
-              const isExist = companyFilter?.find((y) => y === x);
+              const isExist = companyFilter?.find((y) => y === x) || false;
 
               return (
                 <li key={x}>
@@ -140,7 +140,7 @@ const Home = () => {
                             companyFilter.filter((k) => k !== x)
                           );
                         } else {
-                          setCompanyFilter((prev) => [...prev, e.target.value]);
+                          setCompanyFilter((prev) => [...prev, x]);
                         }
                       }}
                       checked={isExist}
