@@ -50,8 +50,6 @@ const Home = () => {
     lng: currCenter.lng,
   });
 
-  console.log("qwdqwdqwdqw", excelData);
-
   // get filter menu
   const { data: filterMenu, refetch: getFilterMenuRefetch } =
     useGetFilterMenu();
@@ -73,7 +71,6 @@ const Home = () => {
     const lng = latlng.getLng();
     setCurrCenter({ lat, lng });
   };
-  console.log(currCenter);
 
   // 경도, 위도만 따로 생성(리바운스에 사용)
   useEffect(() => {
