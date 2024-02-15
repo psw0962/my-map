@@ -1,9 +1,12 @@
 import { useState } from "react";
 import * as XLSX from "xlsx";
 import supabase from "@/config/supabaseClient";
+import Font from "@/component/font";
+import styled from "styled-components";
 
 const ExcelImport = () => {
-  // onchange states
+  const [failData, setFailData] = useState([]);
+  const [failCount, setFailCount] = useState(0);
   const [excelFile, setExcelFile] = useState(null);
   const [typeError, setTypeError] = useState(null);
 
@@ -51,6 +54,7 @@ const ExcelImport = () => {
   // submit event
   const handleFileSubmit = async (e) => {
     e.preventDefault();
+
     if (excelFile !== null) {
       const workbook = XLSX.read(excelFile, { type: "buffer" });
       const worksheetName = workbook.SheetNames[0];
@@ -58,37 +62,6 @@ const ExcelImport = () => {
       const data = XLSX.utils.sheet_to_json(worksheet);
       // setExcelData(data.slice(0, 10));
 
-      // // 위도, 경도 추가
-      // window.kakao.maps.load();
-      // const geocoder = new window.kakao.maps.services.Geocoder();
-      // const result = [];
-
-      // const geocodingPromises = data?.map((x) => {
-      //   return new Promise((resolve) => {
-      //     geocoder.addressSearch(x.address, function (k, status) {
-      //       if (status === window.kakao.maps.services.Status.OK) {
-      //         result.push({
-      //           ...x,
-      //           lat: k[0].y.toString(),
-      //           lng: k[0].x.toString(),
-      //         });
-      //       }
-
-      //       resolve();
-      //     });
-      //   });
-      // });
-
-      // // 모든 주소 검색 작업이 완료될 때까지 기다립니다.
-      // await Promise.all(geocodingPromises);
-      // // 데이터베이스에 해당 데이터를 저장
-      // await supabase.from("excel").insert(result).select();
-
-      // ===========
-      // ===========
-      // ===========
-      // ===========
-      // ===========
       window.kakao.maps.load();
       const geocoder = new window.kakao.maps.services.Geocoder();
       const result = [];
@@ -97,6 +70,11 @@ const ExcelImport = () => {
         const geocodingPromises = batchAddresses.map((x) => {
           return new Promise((resolve) => {
             geocoder.addressSearch(x.address, function (k, status) {
+              if (status === "ZERO_RESULT") {
+                setFailData((prev) => [...prev, x.address]);
+                setFailCount((prev) => prev + 1);
+              }
+
               if (status === window.kakao.maps.services.Status.OK) {
                 result.push({
                   ...x,
@@ -129,12 +107,10 @@ const ExcelImport = () => {
           );
 
           const batchAddresses = addresses.slice(startIndex, endIndex);
-          console.log(batchAddresses);
 
-          await geocodeBatch(batchAddresses); // 배치 주소 검색 함수 호출
+          await geocodeBatch(batchAddresses);
 
           if (batchIndex < totalBatches - 1) {
-            // 마지막 배치가 아니라면 5초 대기
             await delay(10000);
           }
         }
@@ -145,29 +121,49 @@ const ExcelImport = () => {
 
       // 주소 데이터가 있다고 가정하고 함수 호출
       const geocodedResult = await geocodeAddresses(data);
-      console.log("Geocoded Result:", geocodedResult);
+
+      if (failCount > 0) {
+        alert(
+          "주소 변환에 실패한 주소가 있습니다. 수정 후 다시 업로드 해주세요."
+        );
+        return;
+      } else {
+        await supabase.from("excel").insert(geocodedResult).select();
+      }
+
+      // await supabase.from("excel").insert(geocodedResult).select();
     }
   };
 
   return (
-    <div className="wrapper">
-      {/* form */}
-      <form className="form-group custom-form" onSubmit={handleFileSubmit}>
-        <input
-          type="file"
-          className="form-control"
-          required
-          onChange={handleFile}
-        />
-        <button type="submit" className="btn btn-success btn-md">
-          UPLOAD
-        </button>
-        {typeError && (
-          <div className="alert alert-danger" role="alert">
-            {typeError}
-          </div>
-        )}
+    <Frame>
+      <form onSubmit={handleFileSubmit}>
+        <input type="file" required onChange={handleFile} />
+
+        <button type="submit">UPLOAD</button>
+
+        {typeError && <div role="alert">{typeError}</div>}
       </form>
+
+      <FailFrame>
+        {failCount > 0 && (
+          <FailWrapper>
+            <Font fontSize="2rem">주소 변환 실패 갯수</Font>
+            <Font fontSize="2rem">{failCount}</Font>
+          </FailWrapper>
+        )}
+      </FailFrame>
+
+      <FailFrame>
+        {failData?.map((x, index) => {
+          return (
+            <FailWrapper key={index}>
+              <Font fontSize="2rem">실패</Font>
+              <Font fontSize="2rem">{x}</Font>
+            </FailWrapper>
+          );
+        })}
+      </FailFrame>
 
       {/* <div className="viewer">
         {excelData ? (
@@ -196,8 +192,27 @@ const ExcelImport = () => {
           <div>No File is uploaded yet!</div>
         )}
       </div> */}
-    </div>
+    </Frame>
   );
 };
 
 export default ExcelImport;
+
+const Frame = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+`;
+
+const FailFrame = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 4rem;
+`;
+
+const FailWrapper = styled.div`
+  display: flex;
+  gap: 3rem;
+  margin-top: 1rem;
+`;

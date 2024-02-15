@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Map, MapTypeControl, ZoomControl } from "react-kakao-maps-sdk";
 import ReSetttingMapBounds from "@/component/resetting-map-bounds";
 import CustomMapMarker from "@/component/custom-map-maker";
@@ -31,6 +31,9 @@ const Home = () => {
     end: "",
   });
 
+  // 현재 위도 경도
+  const [currCenter, setCurrCenter] = useState({ lat: 37.5665, lng: 126.978 });
+
   const { data: user } = useGetUserInfo();
 
   // get excel
@@ -43,7 +46,11 @@ const Home = () => {
     company: companyFilter,
     startStocks: stocks.start,
     endStocks: stocks.end,
+    lat: currCenter.lat,
+    lng: currCenter.lng,
   });
+
+  console.log("qwdqwdqwdqw", excelData);
 
   // get filter menu
   const { data: filterMenu, refetch: getFilterMenuRefetch } =
@@ -53,11 +60,20 @@ const Home = () => {
   const { data: completedStocks, refetch: getCompletedStocksRefetch } =
     useGetCompletedStocks();
 
-  // 지도 확대 레벨 트리거
+  // 지도 확대 레벨 트리거 핸들러
   const handleZoomChange = (map) => {
     const currentLevel = map.getLevel();
     setMapLevel(currentLevel);
   };
+
+  // 지도 드래그 트리거 핸들러
+  const handleDragEnd = (map) => {
+    const latlng = map.getCenter();
+    const lat = latlng.getLat();
+    const lng = latlng.getLng();
+    setCurrCenter({ lat, lng });
+  };
+  console.log(currCenter);
 
   // 경도, 위도만 따로 생성(리바운스에 사용)
   useEffect(() => {
@@ -69,6 +85,11 @@ const Home = () => {
 
     setPoints(latLng);
   }, [excelData]);
+
+  // 지도 드래그를 트리거
+  useEffect(() => {
+    getExcelRefetch();
+  }, [currCenter]);
 
   return (
     <>
@@ -219,6 +240,7 @@ const Home = () => {
         }}
         level={mapLevel}
         onZoomChanged={handleZoomChange}
+        onDragEnd={handleDragEnd}
       >
         {/* 컨트롤러 생성 */}
         <MapTypeControl position={"TOPRIGHT"} />

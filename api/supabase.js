@@ -24,6 +24,16 @@ const getExcel = async (queryString) => {
     query = query.lte("stocks", queryString.endStocks);
   }
 
+  if (queryString.lat && queryString.lat !== "") {
+    query = query.gte("lat", queryString.lat - 0.05);
+    query = query.lte("lat", queryString.lat + 0.05);
+  }
+
+  if (queryString.lng && queryString.lng !== "") {
+    query = query.gte("lng", queryString.lng - 0.05);
+    query = query.lte("lng", queryString.lng + 0.05);
+  }
+
   // 최종 쿼리 실행
   const { data, error } = await query;
 
