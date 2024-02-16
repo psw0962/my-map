@@ -30,26 +30,46 @@ export const convertQueryString = (queryString, mapLevel) => {
     query = query.lte("lng", queryString.lng + 0.02);
   }
 
-  // 맵 확대 레벨 8~10
-  if (queryString.lat && queryString.lat !== "" && mapLevel > 7) {
-    query = query.gte("lat", queryString.lat - 0.05);
-    query = query.lte("lat", queryString.lat + 0.05);
+  // 맵 확대 레벨 7이상 ~ 10이하
+  if (
+    queryString.lat &&
+    queryString.lat !== "" &&
+    mapLevel >= 7 &&
+    mapLevel <= 10
+  ) {
+    query = query.gte("lat", queryString.lat - 0.07);
+    query = query.lte("lat", queryString.lat + 0.07);
   }
 
-  if (queryString.lng && queryString.lng !== "" && mapLevel > 7) {
-    query = query.gte("lng", queryString.lng - 0.05);
-    query = query.lte("lng", queryString.lng + 0.05);
+  if (
+    queryString.lng &&
+    queryString.lng !== "" &&
+    mapLevel >= 7 &&
+    mapLevel <= 10
+  ) {
+    query = query.gte("lng", queryString.lng - 0.07);
+    query = query.lte("lng", queryString.lng + 0.07);
   }
 
   // 맵 확대 레벨 11~14
-  if (queryString.lat && queryString.lat !== "" && mapLevel > 10) {
-    query = query.gte("lat", queryString.lat - 0.09);
-    query = query.lte("lat", queryString.lat + 0.09);
+  if (
+    queryString.lat &&
+    queryString.lat !== "" &&
+    mapLevel >= 10 &&
+    mapLevel <= 14
+  ) {
+    query = query.gte("lat", queryString.lat - 0.12);
+    query = query.lte("lat", queryString.lat + 0.12);
   }
 
-  if (queryString.lng && queryString.lng !== "" && mapLevel > 10) {
-    query = query.gte("lng", queryString.lng - 0.09);
-    query = query.lte("lng", queryString.lng + 0.09);
+  if (
+    queryString.lng &&
+    queryString.lng !== "" &&
+    mapLevel > 10 &&
+    mapLevel <= 14
+  ) {
+    query = query.gte("lng", queryString.lng - 0.1);
+    query = query.lte("lng", queryString.lng + 0.1);
   }
 
   return query;
