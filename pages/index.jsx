@@ -80,7 +80,6 @@ const Home = () => {
 
   // 지도 드래그, 확대 레벨 트리거
   useEffect(() => {
-    console.log("here");
     excelDataRefetch();
   }, [currCenter, mapLevel]);
 
@@ -263,7 +262,7 @@ const Home = () => {
         {/* {points.length > 0 && <ReSetttingMapBounds points={points} />} */}
 
         {/* 마커 생성 */}
-        {mapLevel > 7 &&
+        {mapLevel >= 7 &&
           excelData?.slice(0, 50)?.map((x) => {
             return (
               <CustomMapMarker key={x.id} makerData={x} userId={user?.email} />
