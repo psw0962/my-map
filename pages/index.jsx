@@ -78,8 +78,9 @@ const Home = () => {
     setCurrCenter({ lat, lng });
   };
 
-  // 지도 드래그를 트리거
+  // 지도 드래그, 확대 레벨 트리거
   useEffect(() => {
+    console.log("here");
     excelDataRefetch();
   }, [currCenter, mapLevel]);
 
