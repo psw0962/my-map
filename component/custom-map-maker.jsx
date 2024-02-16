@@ -119,7 +119,7 @@ const CustomMapMarker = ({ makerData, userId }) => {
           },
           options: {
             offset: {
-              x: 27,
+              x: 20,
               y: 69,
             },
           },
@@ -133,7 +133,7 @@ const CustomMapMarker = ({ makerData, userId }) => {
               lng: `${makerData.lng}`,
             }}
             clickable={true}
-            yAnchor={1.25}
+            yAnchor={1.28}
             zIndex={100}
           >
             <InfoWindow>

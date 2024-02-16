@@ -24,7 +24,22 @@ const ExcelImport = () => {
   //     login();
   //   }, []);
 
-  // onchange event
+  const convertToExportArray = (arr) => {
+    const result = [];
+
+    // 헤더 행 추가
+    const headers = Object.keys(arr[0]);
+    result.push(headers);
+
+    // 데이터 행 추가
+    arr.forEach((item) => {
+      const row = headers.map((header) => item[header]);
+      result.push(row);
+    });
+
+    return result;
+  };
+
   const handleFile = (e) => {
     let fileTypes = [
       "application/vnd.ms-excel",
@@ -51,7 +66,26 @@ const ExcelImport = () => {
     }
   };
 
-  // submit event
+  const handleExport = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(convertToExportArray(failData));
+
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+    const blob = new Blob([wbout], { type: "application/octet-stream" });
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = "주소변환실패현황.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   const handleFileSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,12 +100,19 @@ const ExcelImport = () => {
       const geocoder = new window.kakao.maps.services.Geocoder();
       const result = [];
 
+      const delay = (ms) => {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      };
+
       const geocodeBatch = async (batchAddresses) => {
         const geocodingPromises = batchAddresses.map((x) => {
           return new Promise((resolve) => {
             geocoder.addressSearch(x.address, function (k, status) {
               if (status === "ZERO_RESULT") {
-                setFailData((prev) => [...prev, x.address]);
+                setFailData((prev) => [
+                  ...prev,
+                  { address: x.address, code: x.code },
+                ]);
                 setFailCount((prev) => prev + 1);
               }
 
@@ -82,6 +123,7 @@ const ExcelImport = () => {
                   lng: k[0].x.toString(),
                 });
               }
+
               resolve();
             });
           });
@@ -91,12 +133,8 @@ const ExcelImport = () => {
         await Promise.all(geocodingPromises);
       };
 
-      const delay = (ms) => {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-      };
-
       const geocodeAddresses = async (addresses) => {
-        const batchSize = 200; // 한 번에 보낼 주소의 갯수
+        const batchSize = 400; // 한 번에 보낼 주소의 갯수
         const totalBatches = Math.ceil(addresses.length / batchSize);
 
         for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
@@ -110,29 +148,34 @@ const ExcelImport = () => {
 
           await geocodeBatch(batchAddresses);
 
+          // 작업중
           if (batchIndex < totalBatches - 1) {
             await delay(10000);
+          }
+
+          // 모든 작업이 끝나면
+          if (batchIndex >= totalBatches - 1) {
+            // 최초 업로드한 배열의 길이와 작업 후의 배열의 길이가 다르면 DB 업로드 X
+            if (result.length !== addresses.length) {
+              alert(
+                "주소 변환에 실패한 주소가 있습니다. 수정 후 다시 업로드 해주세요."
+              );
+              return;
+            }
+
+            // 최초 업로드한 배열의 길이와 작업 후의 배열의 길이가 같으면 DB 업로드 O
+            if (result.length === addresses.length) {
+              await supabase.from("excel").insert(result).select();
+              return;
+            }
           }
         }
 
         return result;
       };
 
-      // if (failCount > 0) {
-      //   alert(
-      //     "주소 변환에 실패한 주소가 있습니다. 수정 후 다시 업로드 해주세요."
-      //   );
-
-      //   return;
-      // } else {
-      //   const geocodedResult = await geocodeAddresses(data);
-      //   await supabase.from("excel").insert(geocodedResult).select();
-
-      //   return;
-      // }
-
-      const geocodedResult = await geocodeAddresses(data);
-      await supabase.from("excel").insert(geocodedResult).select();
+      // 주소 변환 후 DB업로드 실행
+      await geocodeAddresses(data);
     }
   };
 
@@ -151,6 +194,13 @@ const ExcelImport = () => {
           <FailWrapper>
             <Font fontSize="2rem">주소 변환 실패 갯수</Font>
             <Font fontSize="2rem">{failCount}</Font>
+            <Font
+              fontSize="2rem"
+              cursor="pointer"
+              onClick={() => handleExport()}
+            >
+              export
+            </Font>
           </FailWrapper>
         )}
       </FailFrame>
@@ -160,7 +210,8 @@ const ExcelImport = () => {
           return (
             <FailWrapper key={index}>
               <Font fontSize="2rem">실패</Font>
-              <Font fontSize="2rem">{x}</Font>
+              <Font fontSize="2rem">{x.code}</Font>
+              <Font fontSize="2rem">{x.address}</Font>
             </FailWrapper>
           );
         })}

@@ -6,14 +6,14 @@ import { convertQueryString } from "@/function/convert-query-string";
 // =======================================
 // ============== 엑셀 데이터 ===============
 // =======================================
-const getExcel = async (queryString) => {
-  const { data, error } = await convertQueryString(queryString);
+const getExcel = async (queryString, mapLevel) => {
+  const { data, error } = await convertQueryString(queryString, mapLevel);
 
   return data;
 };
 
-export const useGetExcel = (queryString) => {
-  return useQuery(["excel"], () => getExcel(queryString), {
+export const useGetExcel = (queryString, mapLevel) => {
+  return useQuery(["excel"], () => getExcel(queryString, mapLevel), {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,

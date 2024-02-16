@@ -40,14 +40,17 @@ const Home = () => {
     data: excelData,
     refetch: excelDataRefetch,
     isLoading: excelIsLoading,
-  } = useGetExcel({
-    status: statusFilter,
-    company: companyFilter,
-    startStocks: stocks.start,
-    endStocks: stocks.end,
-    lat: currCenter.lat,
-    lng: currCenter.lng,
-  });
+  } = useGetExcel(
+    {
+      status: statusFilter,
+      company: companyFilter,
+      startStocks: stocks.start,
+      endStocks: stocks.end,
+      lat: currCenter.lat,
+      lng: currCenter.lng,
+    },
+    mapLevel
+  );
 
   const { data: filterMenu } = useGetFilterMenu();
 
@@ -78,7 +81,7 @@ const Home = () => {
   // 지도 드래그를 트리거
   useEffect(() => {
     excelDataRefetch();
-  }, [currCenter]);
+  }, [currCenter, mapLevel]);
 
   // 경도, 위도만 따로 생성(리바운스에 사용)
   // useEffect(() => {
@@ -259,25 +262,19 @@ const Home = () => {
         {/* {points.length > 0 && <ReSetttingMapBounds points={points} />} */}
 
         {/* 마커 생성 */}
-        {mapLevel <= 8
-          ? excelData?.slice(0, 50)?.map((x) => {
-              return (
-                <CustomMapMarker
-                  key={x.id}
-                  makerData={x}
-                  userId={user?.email}
-                />
-              );
-            })
-          : excelData?.map((x) => {
-              return (
-                <CustomMapMarker
-                  key={x.id}
-                  makerData={x}
-                  userId={user?.email}
-                />
-              );
-            })}
+        {mapLevel > 7 &&
+          excelData?.slice(0, 50)?.map((x) => {
+            return (
+              <CustomMapMarker key={x.id} makerData={x} userId={user?.email} />
+            );
+          })}
+
+        {mapLevel < 7 &&
+          excelData?.map((x) => {
+            return (
+              <CustomMapMarker key={x.id} makerData={x} userId={user?.email} />
+            );
+          })}
       </Map>
     </>
   );
