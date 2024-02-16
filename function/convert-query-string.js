@@ -1,127 +1,33 @@
-// export const convertQueryString = (obj) => {
-//   if (!obj || typeof obj !== "object") {
-//     return "";
-//   }
+import supabase from "@/config/supabaseClient";
 
-//   const queryStringArray = Object.keys(obj)
-//     .map((key) => {
-//       if (
-//         !obj[key] ||
-//         (Array.isArray(obj[key]) && obj[key].length === 0) ||
-//         (typeof obj[key] === "object" && Object.keys(obj[key]).length === 0)
-//       ) {
-//         return "";
-//       }
-//       if (key === "startStocks") {
-//         return `(stocks >= "${obj[key]}")`;
-//       } else if (key === "endStocks") {
-//         return `(stocks <= "${obj[key]}")`;
-//       } else {
-//         const values = obj[key].map((value) => `${key}="${value}"`).join("||");
-//         return `(${values})`;
-//       }
-//     })
-//     .filter((str) => str !== "");
+export const convertQueryString = (queryString) => {
+  let query = supabase.from("excel").select();
 
-//   const queryString = queryStringArray.join("&&");
-
-//   return queryString;
-// };
-
-// export const convertQueryString = (obj) => {
-//   if (!obj || typeof obj !== "object") {
-//     return {};
-//   }
-
-//   const queryParams = {};
-
-//   if (obj.status && Array.isArray(obj.status) && obj.status.length > 0) {
-//     queryParams.status = obj.status.map((status) => `eq.${status}`).join(",");
-//   }
-
-//   if (obj.company && Array.isArray(obj.company) && obj.company.length > 0) {
-//     queryParams.company = obj.company
-//       .map((company) => `eq.${company}`)
-//       .join(",");
-//   }
-
-//   if (obj.startStocks) {
-//     queryParams.stocks = queryParams.stocks
-//       ? `${queryParams.stocks}&gte.${obj.startStocks}`
-//       : `gte.${obj.startStocks}`;
-//   }
-
-//   if (obj.endStocks) {
-//     queryParams.stocks = queryParams.stocks
-//       ? `${queryParams.stocks}&lte.${obj.endStocks}`
-//       : `lte.${obj.endStocks}`;
-//   }
-
-//   return queryParams;
-// };
-
-// export const convertQueryString = (obj) => {
-//   if (!obj || typeof obj !== "object") {
-//     return {};
-//   }
-
-//   const queryParams = {};
-
-//   if (obj.status && Array.isArray(obj.status) && obj.status.length > 0) {
-//     queryParams.status = obj.status.map((status) => `in.${status}`).join(",");
-//   }
-
-//   if (obj.company && Array.isArray(obj.company) && obj.company.length > 0) {
-//     queryParams.company = obj.company
-//       .map((company) => `eq.${company}`)
-//       .join(",");
-//   }
-
-//   if (obj.startStocks) {
-//     queryParams.stocks = queryParams.stocks
-//       ? `${queryParams.stocks},gte.${obj.startStocks}`
-//       : `gte.${obj.startStocks}`;
-//   }
-
-//   if (obj.endStocks) {
-//     queryParams.stocks = queryParams.stocks
-//       ? `${queryParams.stocks},lte.${obj.endStocks}`
-//       : `lte.${obj.endStocks}`;
-//   }
-
-//   return queryParams;
-// };
-
-export const convertQueryString = (obj) => {
-  if (!obj || typeof obj !== "object") {
-    return {};
+  if (queryString.status && queryString.status.length > 0) {
+    query = query.in("status", queryString.status);
   }
 
-  const queryParams = {};
-
-  if (obj.status && Array.isArray(obj.status) && obj.status.length > 0) {
-    queryParams.status = `in.('status', [${obj.status
-      .map((status) => `'${status}'`)
-      .join(",")}])`;
+  if (queryString.company && queryString.company.length > 0) {
+    query = query.in("company", queryString.company);
   }
 
-  if (obj.company && Array.isArray(obj.company) && obj.company.length > 0) {
-    queryParams.company = `in.('company', [${obj.company
-      .map((company) => `'${company}'`)
-      .join(",")}])`;
+  if (queryString.startStocks && queryString.startStocks !== "") {
+    query = query.gte("stocks", queryString.startStocks);
   }
 
-  if (obj.startStocks) {
-    queryParams.stocks = queryParams.stocks
-      ? `${queryParams.stocks},gte.${obj.startStocks}`
-      : `gte.${obj.startStocks}`;
+  if (queryString.endStocks && queryString.endStocks !== "") {
+    query = query.lte("stocks", queryString.endStocks);
   }
 
-  if (obj.endStocks) {
-    queryParams.stocks = queryParams.stocks
-      ? `${queryParams.stocks},lte.${obj.endStocks}`
-      : `lte.${obj.endStocks}`;
+  if (queryString.lat && queryString.lat !== "") {
+    query = query.gte("lat", queryString.lat - 0.05);
+    query = query.lte("lat", queryString.lat + 0.05);
   }
 
-  return queryParams;
+  if (queryString.lng && queryString.lng !== "") {
+    query = query.gte("lng", queryString.lng - 0.05);
+    query = query.lte("lng", queryString.lng + 0.05);
+  }
+
+  return query;
 };

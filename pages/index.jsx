@@ -5,8 +5,8 @@ import CustomMapMarker from "@/component/custom-map-maker";
 import {
   useGetExcel,
   useGetFilterMenu,
-  useGetCompletedStocks,
   useGetUserInfo,
+  useGetCompletedFilterMaker,
 } from "@/api/supabase";
 import Font from "@/component/font";
 import Modal from "@/component/modal";
@@ -20,10 +20,10 @@ const Home = () => {
   // 필터 모달
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  // 위도, 경도
-  const [points, setPoints] = useState([]);
+  // 위도, 경도 기반 리바운스
+  // const [points, setPoints] = useState([]);
 
-  // 필터 선택 상태
+  // 필터 선택
   const [statusFilter, setStatusFilter] = useState([]);
   const [companyFilter, setCompanyFilter] = useState([]);
   const [stocks, setStocks] = useState({
@@ -36,10 +36,9 @@ const Home = () => {
 
   const { data: user } = useGetUserInfo();
 
-  // get excel
   const {
     data: excelData,
-    refetch: getExcelRefetch,
+    refetch: excelDataRefetch,
     isLoading: excelIsLoading,
   } = useGetExcel({
     status: statusFilter,
@@ -50,13 +49,17 @@ const Home = () => {
     lng: currCenter.lng,
   });
 
-  // get filter menu
-  const { data: filterMenu, refetch: getFilterMenuRefetch } =
-    useGetFilterMenu();
+  const { data: filterMenu } = useGetFilterMenu();
 
-  // get sum of completed stocks
-  const { data: completedStocks, refetch: getCompletedStocksRefetch } =
-    useGetCompletedStocks();
+  const {
+    data: completedFilterMakerData,
+    refetch: completedFilterMakerDataRefetch,
+  } = useGetCompletedFilterMaker({
+    status: statusFilter,
+    company: companyFilter,
+    startStocks: stocks.start,
+    endStocks: stocks.end,
+  });
 
   // 지도 확대 레벨 트리거 핸들러
   const handleZoomChange = (map) => {
@@ -72,21 +75,21 @@ const Home = () => {
     setCurrCenter({ lat, lng });
   };
 
-  // 경도, 위도만 따로 생성(리바운스에 사용)
-  useEffect(() => {
-    const latLng = [];
-
-    excelData?.map((x) => {
-      latLng.push({ lat: x.lat, lng: x.lng });
-    });
-
-    setPoints(latLng);
-  }, [excelData]);
-
   // 지도 드래그를 트리거
   useEffect(() => {
-    getExcelRefetch();
+    excelDataRefetch();
   }, [currCenter]);
+
+  // 경도, 위도만 따로 생성(리바운스에 사용)
+  // useEffect(() => {
+  //   const latLng = [];
+
+  //   excelData?.map((x) => {
+  //     latLng.push({ lat: x.lat, lng: x.lng });
+  //   });
+
+  //   setPoints(latLng);
+  // }, [excelData]);
 
   return (
     <>
@@ -106,7 +109,15 @@ const Home = () => {
       </FilterBtn>
 
       <CompletedStocksWrapper>
-        <Font fontSize="2rem">완료된 주식 수 : {completedStocks}</Font>
+        <Font fontSize="2rem">- 필터 정보</Font>
+
+        <Font fontSize="2rem">
+          마커 개수 : {completedFilterMakerData?.length}
+        </Font>
+
+        <Font fontSize="2rem">
+          주식 수의 합 : {completedFilterMakerData?.sumCompletedStocks}
+        </Font>
       </CompletedStocksWrapper>
 
       {/* 필터 모달 */}
@@ -214,7 +225,8 @@ const Home = () => {
           <Font
             fontSize="2rem"
             onClick={() => {
-              getExcelRefetch();
+              excelDataRefetch();
+              completedFilterMakerDataRefetch();
               setIsFilterModalOpen(false);
             }}
             margin="6rem 0 0 0"
@@ -247,12 +259,25 @@ const Home = () => {
         {/* {points.length > 0 && <ReSetttingMapBounds points={points} />} */}
 
         {/* 마커 생성 */}
-        {mapLevel <= 7 &&
-          excelData?.map((x) => {
-            return (
-              <CustomMapMarker key={x.id} patchData={x} userId={user?.email} />
-            );
-          })}
+        {mapLevel <= 8
+          ? excelData?.slice(0, 50)?.map((x) => {
+              return (
+                <CustomMapMarker
+                  key={x.id}
+                  makerData={x}
+                  userId={user?.email}
+                />
+              );
+            })
+          : excelData?.map((x) => {
+              return (
+                <CustomMapMarker
+                  key={x.id}
+                  makerData={x}
+                  userId={user?.email}
+                />
+              );
+            })}
       </Map>
     </>
   );
@@ -307,8 +332,8 @@ const SpinnerFrame = styled.div`
 
 const CompletedStocksWrapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
 
   position: fixed;
   left: 120px;

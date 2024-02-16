@@ -97,7 +97,7 @@ const ExcelImport = () => {
 
       const geocodeAddresses = async (addresses) => {
         const batchSize = 200; // 한 번에 보낼 주소의 갯수
-        const totalBatches = Math.ceil(addresses.length / batchSize); // 총 배치 수
+        const totalBatches = Math.ceil(addresses.length / batchSize);
 
         for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
           const startIndex = batchIndex * batchSize;
@@ -115,23 +115,24 @@ const ExcelImport = () => {
           }
         }
 
-        // 검색이 완료된 결과 반환
         return result;
       };
 
-      // 주소 데이터가 있다고 가정하고 함수 호출
+      // if (failCount > 0) {
+      //   alert(
+      //     "주소 변환에 실패한 주소가 있습니다. 수정 후 다시 업로드 해주세요."
+      //   );
+
+      //   return;
+      // } else {
+      //   const geocodedResult = await geocodeAddresses(data);
+      //   await supabase.from("excel").insert(geocodedResult).select();
+
+      //   return;
+      // }
+
       const geocodedResult = await geocodeAddresses(data);
-
-      if (failCount > 0) {
-        alert(
-          "주소 변환에 실패한 주소가 있습니다. 수정 후 다시 업로드 해주세요."
-        );
-        return;
-      } else {
-        await supabase.from("excel").insert(geocodedResult).select();
-      }
-
-      // await supabase.from("excel").insert(geocodedResult).select();
+      await supabase.from("excel").insert(geocodedResult).select();
     }
   };
 

@@ -1,41 +1,13 @@
 import supabase from "@/config/supabaseClient";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { format } from "date-fns";
+import { convertQueryString } from "@/function/convert-query-string";
 
 // =======================================
-// ============== get excel ==============
+// ============== 엑셀 데이터 ===============
 // =======================================
 const getExcel = async (queryString) => {
-  let query = supabase.from("excel").select();
-
-  if (queryString.status && queryString.status.length > 0) {
-    query = query.in("status", queryString.status);
-  }
-
-  if (queryString.company && queryString.company.length > 0) {
-    query = query.in("company", queryString.company);
-  }
-
-  if (queryString.startStocks && queryString.startStocks !== "") {
-    query = query.gte("stocks", queryString.startStocks);
-  }
-
-  if (queryString.endStocks && queryString.endStocks !== "") {
-    query = query.lte("stocks", queryString.endStocks);
-  }
-
-  if (queryString.lat && queryString.lat !== "") {
-    query = query.gte("lat", queryString.lat - 0.05);
-    query = query.lte("lat", queryString.lat + 0.05);
-  }
-
-  if (queryString.lng && queryString.lng !== "") {
-    query = query.gte("lng", queryString.lng - 0.05);
-    query = query.lte("lng", queryString.lng + 0.05);
-  }
-
-  // 최종 쿼리 실행
-  const { data, error } = await query;
+  const { data, error } = await convertQueryString(queryString);
 
   return data;
 };
@@ -51,7 +23,7 @@ export const useGetExcel = (queryString) => {
 };
 
 // =========================================
-// ============== patch excel ==============
+// ============== 마커 정보 업데이트 ============
 // =========================================
 const patchExcel = async (excelId, userId, patchData) => {
   const makeHistory = `${userId} ${format(new Date(), "yyyy/MM/dd/ HH:mm:ss")}`;
@@ -93,7 +65,7 @@ export const usePatchExcel = (excelId, userId) => {
 };
 
 // =======================================
-// ============== get filter menu ========
+// ============== 필터 메뉴 ================
 // =======================================
 const getFilterMenu = async () => {
   const { data, error } = await supabase.from("excel").select();
@@ -121,13 +93,10 @@ export const useGetFilterMenu = () => {
 };
 
 // ================================================
-// ============== get sum of completed stocks =====
+// ============== 필터 된 마커 정보 ===================
 // ================================================
-const getCompletedStocks = async () => {
-  let { data, error } = await supabase
-    .from("excel")
-    .select("*")
-    .eq("status", "완료");
+const getCompletedFilterMaker = async (queryString) => {
+  const { data, error } = await convertQueryString(queryString);
 
   const sumCompletedStocks = () => {
     const totalStocks = data
@@ -136,21 +105,28 @@ const getCompletedStocks = async () => {
     return totalStocks;
   };
 
-  return sumCompletedStocks();
+  return {
+    sumCompletedStocks: sumCompletedStocks(),
+    length: data.length,
+  };
 };
 
-export const useGetCompletedStocks = () => {
-  return useQuery(["completedStocks"], () => getCompletedStocks(), {
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    enabled: true,
-    staleTime: 1000 * 60 * 5,
-  });
+export const useGetCompletedFilterMaker = (queryString) => {
+  return useQuery(
+    ["completedFilterMaker"],
+    () => getCompletedFilterMaker(queryString),
+    {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      enabled: true,
+      staleTime: 1000 * 60 * 5,
+    }
+  );
 };
 
 // ================================================
-// ============== get user info ===================
+// ============== 로그인한 유저 정보 ===================
 // ================================================
 const getUserInfo = async () => {
   const {

@@ -7,16 +7,16 @@ import Image from "next/image";
 import Modal from "./modal";
 import GlobalSpinner from "@/component/global-spinner";
 
-const CustomMapMarker = ({ patchData, userId }) => {
+const CustomMapMarker = ({ makerData, userId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [patchDataState, setPatchDataState] = useState({});
 
-  const { mutate, isLoading } = usePatchExcel(patchData.id, userId);
+  const { mutate, isLoading } = usePatchExcel(makerData.id, userId);
 
   useEffect(() => {
-    setPatchDataState(patchData);
-  }, [patchData]);
+    setPatchDataState(makerData);
+  }, [makerData]);
 
   const removeTags = (str) => {
     return str?.replace(/<\/?[^>]+(>|$)/g, "");
@@ -34,6 +34,7 @@ const CustomMapMarker = ({ patchData, userId }) => {
           />
         </SpinnerFrame>
       )}
+
       <Modal state={isModalOpen} setState={setIsModalOpen}>
         <InfoWrapper>
           <Font fontSize="2rem">상태 :</Font>
@@ -53,21 +54,21 @@ const CustomMapMarker = ({ patchData, userId }) => {
           >
             <option
               value="선택"
-              // selected={patchData.status === "" ? true : false}
+              // selected={makerData.status === "" ? true : false}
             >
               선택하세요
             </option>
 
             <option
               value="완료"
-              // selected={patchData.status === "완료" ? true : false}
+              // selected={makerData.status === "완료" ? true : false}
             >
               완료
             </option>
 
             <option
               value="실패"
-              // selected={patchData.status === "실패" ? true : false}
+              // selected={makerData.status === "실패" ? true : false}
             >
               실패
             </option>
@@ -96,7 +97,6 @@ const CustomMapMarker = ({ patchData, userId }) => {
           cursor="pointer"
           onClick={() => {
             mutate(patchDataState);
-            // alert("정보가 수정되었습니다.");
           }}
         >
           수정하기
@@ -106,21 +106,34 @@ const CustomMapMarker = ({ patchData, userId }) => {
       {/* 마커 */}
       <MapMarker
         position={{
-          lat: `${patchData.lat}`,
-          lng: `${patchData.lng}`,
+          lat: `${makerData.lat}`,
+          lng: `${makerData.lng}`,
         }}
         clickable={true}
         onClick={() => setIsOpen(!isOpen)}
+        image={{
+          src: `/svg/${makerData.maker}.svg`,
+          size: {
+            width: 40,
+            height: 50,
+          },
+          options: {
+            offset: {
+              x: 27,
+              y: 69,
+            },
+          },
+        }}
       >
         {/* 인포윈도우 */}
         {isOpen && (
           <CustomOverlayMap
             position={{
-              lat: `${patchData.lat}`,
-              lng: `${patchData.lng}`,
+              lat: `${makerData.lat}`,
+              lng: `${makerData.lng}`,
             }}
             clickable={true}
-            yAnchor={1.149}
+            yAnchor={1.25}
             zIndex={100}
           >
             <InfoWindow>
@@ -131,27 +144,27 @@ const CustomMapMarker = ({ patchData, userId }) => {
               />
 
               <InfoWrapper>
-                <Font fontSize="2rem">이름 : {patchData.name}</Font>
+                <Font fontSize="2rem">이름 : {makerData.name}</Font>
               </InfoWrapper>
 
               <InfoWrapper>
-                <Font fontSize="2rem">보유주식 수 : {patchData.stocks}</Font>
+                <Font fontSize="2rem">보유주식 수 : {makerData.stocks}</Font>
               </InfoWrapper>
 
               <InfoWrapper>
-                <Font fontSize="2rem">주소 :{patchData.address}</Font>
+                <Font fontSize="2rem">주소 :{makerData.address}</Font>
               </InfoWrapper>
 
               <InfoWrapper>
-                <Font fontSize="2rem">상태 : {patchData.status}</Font>
+                <Font fontSize="2rem">상태 : {makerData.status}</Font>
               </InfoWrapper>
 
               <InfoWrapper>
-                <Font fontSize="2rem">회사명 : {patchData.company}</Font>
+                <Font fontSize="2rem">회사명 : {makerData.company}</Font>
               </InfoWrapper>
 
               <InfoWrapper>
-                <Font fontSize="2rem">메모 : {patchData.memo}</Font>
+                <Font fontSize="2rem">메모 : {makerData.memo}</Font>
               </InfoWrapper>
 
               {/* <Image
@@ -167,8 +180,8 @@ const CustomMapMarker = ({ patchData, userId }) => {
               <InfoWrapper>
                 <Font fontSize="2rem">변경이력 :</Font>
 
-                {patchData.history !== null &&
-                  patchData.history.map((x) => {
+                {makerData.history !== null &&
+                  makerData.history.map((x) => {
                     return (
                       <Font key={x} fontSize="2rem">
                         {x}
@@ -181,7 +194,6 @@ const CustomMapMarker = ({ patchData, userId }) => {
                 fontSize="2rem"
                 margin="4rem 0 0 0"
                 cursor="pointer"
-                // onClick={() => mutate(patchDataState)}
                 onClick={() => setIsModalOpen(patchDataState)}
               >
                 수정하기
