@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useMap } from "react-kakao-maps-sdk";
 
-const ReSetttingMapBounds = ({ points }) => {
+const ReSettingMapBounds = ({ points }) => {
   const map = useMap();
   const boundsMemo = useMemo(() => {
     const bounds = new kakao.maps.LatLngBounds();
@@ -19,4 +19,4 @@ const ReSetttingMapBounds = ({ points }) => {
   return <></>;
 };
 
-export default ReSetttingMapBounds;
+export default ReSettingMapBounds;

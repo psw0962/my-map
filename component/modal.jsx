@@ -100,6 +100,7 @@ const DialogFrame = styled.div`
   box-sizing: border-box;
   z-index: 100;
   overflow-x: ${(props) => (props.isOverflow ? "auto" : "")};
+  overflow-y: auto;
 
   &.slideUp {
     visibility: visible;

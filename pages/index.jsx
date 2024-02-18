@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Map, MapTypeControl, ZoomControl } from "react-kakao-maps-sdk";
-import ReSetttingMapBounds from "@/component/resetting-map-bounds";
+import SearchAddressBounds from "@/component/search-address-bounds";
 import CustomMapMarker from "@/component/custom-map-maker";
 import {
   useGetExcel,
@@ -9,6 +9,7 @@ import {
   useGetCompletedFilterMaker,
 } from "@/api/supabase";
 import Font from "@/component/font";
+import Button from "@/component/button";
 import Modal from "@/component/modal";
 import GlobalSpinner from "@/component/global-spinner";
 import styled from "styled-components";
@@ -20,8 +21,12 @@ const Home = () => {
   // 필터 모달
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  // 위도, 경도 기반 리바운스
-  // const [points, setPoints] = useState([]);
+  // 주소 검색
+  const [searchAddress, setSearchAddress] = useState({
+    keyWord: "",
+    lat: "",
+    lng: "",
+  });
 
   // 필터 선택
   const [statusFilter, setStatusFilter] = useState([]);
@@ -34,8 +39,10 @@ const Home = () => {
   // 현재 위도 경도
   const [currCenter, setCurrCenter] = useState({ lat: 37.5665, lng: 126.978 });
 
+  // 유저 정보
   const { data: user } = useGetUserInfo();
 
+  // 엑셀 데이터
   const {
     data: excelData,
     refetch: excelDataRefetch,
@@ -52,8 +59,10 @@ const Home = () => {
     mapLevel
   );
 
+  // 필터 메뉴
   const { data: filterMenu } = useGetFilterMenu();
 
+  // 현재 필터 상황
   const {
     data: completedFilterMakerData,
     refetch: completedFilterMakerDataRefetch,
@@ -83,17 +92,6 @@ const Home = () => {
     excelDataRefetch();
   }, [currCenter, mapLevel]);
 
-  // 경도, 위도만 따로 생성(리바운스에 사용)
-  // useEffect(() => {
-  //   const latLng = [];
-
-  //   excelData?.map((x) => {
-  //     latLng.push({ lat: x.lat, lng: x.lng });
-  //   });
-
-  //   setPoints(latLng);
-  // }, [excelData]);
-
   return (
     <>
       {excelIsLoading && (
@@ -112,7 +110,9 @@ const Home = () => {
       </FilterBtn>
 
       <CompletedStocksWrapper>
-        <Font fontSize="2rem">- 필터 정보</Font>
+        <Button fontSize="1.4rem" padding="0.5rem" borderRadius="5px">
+          필터 정보
+        </Button>
 
         <Font fontSize="2rem">
           마커 개수 : {completedFilterMakerData?.length}
@@ -258,21 +258,45 @@ const Home = () => {
         <MapTypeControl position={"TOPRIGHT"} />
         <ZoomControl position={"RIGHT"} />
 
-        {/* 마커 갯수 기반 동적 현재 커서 위치 이동 */}
-        {/* {points.length > 0 && <ReSetttingMapBounds points={points} />} */}
+        {/* 주소 검색 */}
+
+        <SearchAddressWrapper>
+          <input
+            type="text"
+            onChange={(e) =>
+              setSearchAddress((prev) => {
+                return { ...prev, keyWord: e.target.value };
+              })
+            }
+          />
+
+          <SearchAddressBounds
+            searchAddress={searchAddress}
+            setSearchAddress={setSearchAddress}
+          />
+        </SearchAddressWrapper>
 
         {/* 마커 생성 */}
         {mapLevel >= 7 &&
           excelData?.slice(0, 50)?.map((x) => {
             return (
-              <CustomMapMarker key={x.id} makerData={x} userId={user?.email} />
+              <CustomMapMarker
+                key={x.id}
+                excelData={excelData}
+                makerData={x}
+                userId={user?.email}
+              />
             );
           })}
-
         {mapLevel < 7 &&
           excelData?.map((x) => {
             return (
-              <CustomMapMarker key={x.id} makerData={x} userId={user?.email} />
+              <CustomMapMarker
+                key={x.id}
+                excelData={excelData}
+                makerData={x}
+                userId={user?.email}
+              />
             );
           })}
       </Map>
@@ -334,6 +358,21 @@ const CompletedStocksWrapper = styled.div`
 
   position: fixed;
   left: 120px;
+  top: 20px;
+  padding: 1rem;
+  border: 1px #000 solid;
+  border-radius: 10px;
+  background-color: #fff;
+  z-index: 100;
+  cursor: pointer;
+`;
+
+const SearchAddressWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+
+  position: fixed;
+  left: 380px;
   top: 20px;
   padding: 1rem;
   border: 1px #000 solid;

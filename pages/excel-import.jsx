@@ -107,7 +107,7 @@ const ExcelImport = () => {
       const geocodeBatch = async (batchAddresses) => {
         const geocodingPromises = batchAddresses.map((x) => {
           return new Promise((resolve) => {
-            geocoder.addressSearch(x.address, function (k, status) {
+            geocoder.addressSearch(x.latlngaddress, function (k, status) {
               if (status === "ZERO_RESULT") {
                 setFailData((prev) => [
                   ...prev,
