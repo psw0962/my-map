@@ -113,15 +113,15 @@ const Home = () => {
 
       {/* 필터 현황판 */}
       <CompletedStocksWrapper>
-        <Button fontSize="1.4rem" padding="0.5rem" borderRadius="5px">
+        <Button fontSize="1.5rem" padding="0.5rem" borderRadius="5px">
           필터 정보
         </Button>
 
-        <Font fontSize="2rem">
+        <Font fontSize="1.5rem">
           마커 개수 : {completedFilterMakerData?.length}
         </Font>
 
-        <Font fontSize="2rem">
+        <Font fontSize="1.5rem">
           주식 수의 합 : {completedFilterMakerData?.sumCompletedStocks}
         </Font>
       </CompletedStocksWrapper>
@@ -327,15 +327,14 @@ const FilterBtn = styled.div`
   justify-content: center;
   align-items: center;
 
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
 
   position: fixed;
   left: 2rem;
   top: 2rem;
-  /* left: 20px;
-  top: 20px; */
 
+  height: 5rem;
   padding: 2rem;
   border: 1px #000 solid;
   border-radius: 10px;
@@ -350,10 +349,8 @@ const CompletedStocksWrapper = styled.div`
   gap: 1rem;
 
   position: fixed;
-  left: 12rem;
-  top: 2rem;
-  /* left: 12px;
-  top: 20px; */
+  left: 2rem;
+  top: 7.5rem;
 
   padding: 1rem;
   border: 1px #000 solid;
