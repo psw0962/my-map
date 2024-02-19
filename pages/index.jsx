@@ -4,7 +4,6 @@ import SearchAddressBounds from "@/component/search-address-bounds";
 import CustomMapMarker from "@/component/custom-map-maker";
 import {
   useGetExcel,
-  useGetFilterMenu,
   useGetUserInfo,
   useGetCompletedFilterMaker,
 } from "@/api/supabase";
@@ -13,6 +12,7 @@ import Button from "@/component/button";
 import Modal from "@/component/modal";
 import GlobalSpinner from "@/component/global-spinner";
 import styled from "styled-components";
+import FilterModalChildren from "@/component/modal-children/filter-modal-children";
 
 const Home = () => {
   // 현재 지도 확대 레벨
@@ -59,9 +59,6 @@ const Home = () => {
     mapLevel
   );
 
-  // 필터 메뉴
-  const { data: filterMenu } = useGetFilterMenu();
-
   // 현재 필터 상황
   const {
     data: completedFilterMakerData,
@@ -106,144 +103,18 @@ const Home = () => {
         </SpinnerFrame>
       )}
 
-      {/* 필터 버튼 */}
-      <FilterBtn onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}>
-        필터
-      </FilterBtn>
-
-      {/* 필터 현황 */}
-      <CompletedStocksWrapper>
-        <Button fontSize="1.5rem" padding="0.5rem" borderRadius="5px">
-          필터 현황
-        </Button>
-
-        <Font fontSize="1.5rem">
-          마커 개수 : {completedFilterMakerData?.length}
-        </Font>
-
-        <Font fontSize="1.5rem">
-          주식 수의 합 : {completedFilterMakerData?.sumCompletedStocks}
-        </Font>
-      </CompletedStocksWrapper>
-
       {/* 필터 모달 */}
       <Modal state={isFilterModalOpen} setState={setIsFilterModalOpen}>
-        <Font fontSize="2rem" margin="0 0 1.5rem 0">
-          상태
-        </Font>
-
-        <FilterWrapper>
-          {filterMenu?.statusMenu?.map((x) => {
-            const isExist = statusFilter?.find((y) => y === x) || false;
-
-            return (
-              <li key={x}>
-                <FilterLabel>
-                  <input
-                    type="checkbox"
-                    id={`status${x}`}
-                    name={`status${x}`}
-                    onChange={(e) => {
-                      if (isExist) {
-                        setStatusFilter(() =>
-                          statusFilter.filter((k) => k !== x)
-                        );
-                      } else {
-                        setStatusFilter((prev) => [...prev, x]);
-                      }
-                    }}
-                    checked={isExist}
-                  />
-
-                  {x}
-                </FilterLabel>
-              </li>
-            );
-          })}
-        </FilterWrapper>
-
-        <Font fontSize="2rem" margin="3rem 0 1.5rem 0">
-          회사
-        </Font>
-
-        <FilterWrapper>
-          {filterMenu?.companyMenu?.map((x) => {
-            const isExist = companyFilter?.find((y) => y === x) || false;
-
-            return (
-              <li key={x}>
-                <FilterLabel htmlFor={`company${x}`}>
-                  <input
-                    type="checkbox"
-                    id={`company${x}`}
-                    name={`company${x}`}
-                    onChange={(e) => {
-                      if (isExist) {
-                        setCompanyFilter(() =>
-                          companyFilter.filter((k) => k !== x)
-                        );
-                      } else {
-                        setCompanyFilter((prev) => [...prev, x]);
-                      }
-                    }}
-                    checked={isExist}
-                  />
-                  {x}
-                </FilterLabel>
-              </li>
-            );
-          })}
-        </FilterWrapper>
-
-        <Font fontSize="2rem" margin="3rem 0 1.5rem 0">
-          주식 수
-        </Font>
-
-        <FilterWrapper>
-          <input
-            type="number"
-            onChange={(e) => {
-              setStocks((prev) => {
-                return {
-                  ...prev,
-                  start: e.target.value,
-                };
-              });
-            }}
-          />
-
-          <Font fontSize="1.5rem">~</Font>
-
-          <input
-            type="number"
-            onChange={(e) => {
-              setStocks((prev) => {
-                return {
-                  ...prev,
-                  end: e.target.value,
-                };
-              });
-            }}
-          />
-        </FilterWrapper>
-
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            fontSize="2rem"
-            backgroundColor="#5599FF"
-            border="1px solid #5599FF"
-            color="#fff"
-            margin="6rem 0 0 0"
-            cursor="pointer"
-            onClick={() => {
-              excelDataRefetch();
-              completedFilterMakerDataRefetch();
-              setIsFilterModalOpen(false);
-            }}
-          >
-            적용하기
-          </Button>
-        </div>
+        <FilterModalChildren
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          companyFilter={companyFilter}
+          setCompanyFilter={setCompanyFilter}
+          setStocks={setStocks}
+          excelDataRefetch={excelDataRefetch}
+          completedFilterMakerDataRefetch={completedFilterMakerDataRefetch}
+          setIsFilterModalOpen={setIsFilterModalOpen}
+        />
       </Modal>
 
       {/* 지도 */}
@@ -263,6 +134,26 @@ const Home = () => {
         {/* 컨트롤러 생성 */}
         <MapTypeControl position={"TOPRIGHT"} />
         <ZoomControl position={"RIGHT"} />
+
+        {/* 필터 버튼 */}
+        <FilterBtn onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}>
+          필터
+        </FilterBtn>
+
+        {/* 필터 현황 */}
+        <CompletedStocksWrapper>
+          <Button fontSize="1.5rem" padding="0.5rem" borderRadius="5px">
+            필터 현황
+          </Button>
+
+          <Font fontSize="1.5rem">
+            마커 개수 : {completedFilterMakerData?.length}
+          </Font>
+
+          <Font fontSize="1.5rem">
+            주식 수의 합 : {completedFilterMakerData?.sumCompletedStocks}
+          </Font>
+        </CompletedStocksWrapper>
 
         {/* 주소 검색 */}
         <SearchAddressBounds
@@ -299,18 +190,6 @@ const Home = () => {
 };
 
 export default Home;
-
-const FilterWrapper = styled.ul`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
-
-const FilterLabel = styled.label`
-  display: flex;
-  align-items: center;
-  font-size: 1.5rem;
-`;
 
 const SpinnerFrame = styled.div`
   position: fixed;

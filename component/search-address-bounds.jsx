@@ -56,7 +56,7 @@ const SearchAddressBounds = ({ searchAddress, setSearchAddress }) => {
     map.setBounds(boundsData);
   };
 
-  // 디바운스 객체가(검색어가 0.5초 늦게적용) 바뀔 때마다 위도 경도 API 호출
+  // 디바운스 객체가(검색어 onChange 0.5초 늦게적용) 바뀔 때마다 위도 경도 API 호출
   useEffect(() => {
     if (debouncedSearch !== "") {
       onChangeSearchAddress();

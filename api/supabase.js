@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { convertQueryString } from "@/function/convert-query-string";
 
 // =======================================
-// ============== 엑셀 데이터 ===============
+// ============== get 엑셀 데이터 ===============
 // =======================================
 const getExcel = async (queryString, mapLevel) => {
   const { data, error } = await convertQueryString(queryString, mapLevel);
@@ -19,11 +19,14 @@ export const useGetExcel = (queryString, mapLevel) => {
     refetchOnReconnect: false,
     enabled: true,
     staleTime: 1000 * 60 * 5,
+    onError: () => {
+      alert("네트워크 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.");
+    },
   });
 };
 
 // =========================================
-// ============== 마커 정보 업데이트 ============
+// ============== patch 마커 정보 업데이트 ============
 // =========================================
 const patchExcel = async (excelId, userId, patchData) => {
   const makeHistory = `${userId} ${format(new Date(), "yyyy/MM/dd/ HH:mm:ss")}`;
@@ -61,11 +64,14 @@ export const usePatchExcel = (excelId, userId) => {
       queryClient.invalidateQueries(["filterMenu"]);
       queryClient.invalidateQueries(["completedStocks"]);
     },
+    onError: () => {
+      alert("네트워크 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.");
+    },
   });
 };
 
 // =======================================
-// ============== 필터 메뉴 ================
+// ============== get 필터 메뉴 ================
 // =======================================
 const getFilterMenu = async () => {
   const { data, error } = await supabase.from("excel").select();
@@ -89,11 +95,14 @@ export const useGetFilterMenu = () => {
     refetchOnReconnect: false,
     enabled: true,
     staleTime: 1000 * 60 * 5,
+    onError: () => {
+      alert("네트워크 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.");
+    },
   });
 };
 
 // ================================================
-// ============== 필터 된 마커 정보 ===================
+// ============== get 필터 된 마커 정보 ===================
 // ================================================
 const getCompletedFilterMaker = async (queryString) => {
   const { data, error } = await convertQueryString(queryString);
@@ -121,12 +130,15 @@ export const useGetCompletedFilterMaker = (queryString) => {
       refetchOnReconnect: false,
       enabled: true,
       staleTime: 1000 * 60 * 5,
+      onError: () => {
+        alert("네트워크 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.");
+      },
     }
   );
 };
 
 // ================================================
-// ============== 로그인한 유저 정보 ===================
+// ============== get 로그인한 유저 정보 ===================
 // ================================================
 const getUserInfo = async () => {
   const {
@@ -143,5 +155,8 @@ export const useGetUserInfo = () => {
     refetchOnReconnect: false,
     enabled: true,
     staleTime: 1000 * 60 * 5,
+    onError: () => {
+      alert("네트워크 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.");
+    },
   });
 };

@@ -9,6 +9,7 @@ const Button = ({
   borderRadius,
   backgroundColor,
   color,
+  lineHeight,
   onClick,
   children,
 }) => {
@@ -22,6 +23,7 @@ const Button = ({
       padding={padding}
       backgroundColor={backgroundColor}
       color={color}
+      lineHeight={lineHeight}
       onClick={onClick}
     >
       {children}
@@ -40,6 +42,7 @@ const ButtonComp = styled.div`
   background-color: ${(props) =>
     props.backgroundColor ? props.backgroundColor : "#fff"};
   color: ${(props) => (props.color ? props.color : "#000")};
+  line-height: ${(props) => (props.lineHeight ? props.lineHeight : 1.2)};
   cursor: pointer;
 `;
 
