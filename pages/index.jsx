@@ -111,10 +111,10 @@ const Home = () => {
         필터
       </FilterBtn>
 
-      {/* 필터 현황판 */}
+      {/* 필터 현황 */}
       <CompletedStocksWrapper>
         <Button fontSize="1.5rem" padding="0.5rem" borderRadius="5px">
-          필터 정보
+          필터 현황
         </Button>
 
         <Font fontSize="1.5rem">
