@@ -8,6 +8,7 @@ import Modal from "./modal";
 import GlobalSpinner from "@/component/global-spinner";
 import Line from "./line";
 import Button from "./button";
+import { format } from "date-fns";
 
 const CustomMapMarker = ({ excelData, makerData, userId }) => {
   // 인포윈도우
@@ -417,9 +418,17 @@ const CustomMapMarker = ({ excelData, makerData, userId }) => {
             backgroundColor="#5599FF"
             border="1px solid #5599FF"
             color="#fff"
-            onClick={() => {
-              duplicateMakerDataMutate(duplicateMakerDataState);
-              setDuplicateMakerData(duplicateMakerDataState);
+            onClick={async () => {
+              await duplicateMakerDataMutate(duplicateMakerDataState);
+              setDuplicateMakerData(() => {
+                return {
+                  ...duplicateMakerDataState,
+                  history: [
+                    ...duplicateMakerDataState?.history,
+                    `${userId} ${format(new Date(), "yyyy/MM/dd/ HH:mm:ss")}`,
+                  ],
+                };
+              });
               setDuplicateMakerDataState(null);
             }}
           >
@@ -616,6 +625,6 @@ const SpinnerFrame = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 9998;
+  z-index: 100;
   background-color: rgba(0, 0, 0, 0.5);
 `;

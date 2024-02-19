@@ -69,7 +69,7 @@ const Frame = styled.div`
   right: 0;
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.7);
-  z-index: 100;
+  z-index: 10;
   transition: all 0.2s ease-in-out;
 
   &.slideUp {
@@ -98,7 +98,7 @@ const DialogFrame = styled.div`
   background-color: #fff;
   transition: all 0.2s ease-in-out;
   box-sizing: border-box;
-  z-index: 100;
+  z-index: 10;
   overflow-x: ${(props) => (props.isOverflow ? "auto" : "")};
   overflow-y: auto;
 

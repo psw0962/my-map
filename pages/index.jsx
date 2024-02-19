@@ -94,6 +94,7 @@ const Home = () => {
 
   return (
     <>
+      {/* 스피너 */}
       {excelIsLoading && (
         <SpinnerFrame>
           <GlobalSpinner
@@ -105,10 +106,12 @@ const Home = () => {
         </SpinnerFrame>
       )}
 
+      {/* 필터 버튼 */}
       <FilterBtn onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}>
         필터
       </FilterBtn>
 
+      {/* 필터 현황판 */}
       <CompletedStocksWrapper>
         <Button fontSize="1.4rem" padding="0.5rem" borderRadius="5px">
           필터 정보
@@ -125,119 +128,122 @@ const Home = () => {
 
       {/* 필터 모달 */}
       <Modal state={isFilterModalOpen} setState={setIsFilterModalOpen}>
-        <FilterFrame>
-          <Font fontSize="2rem" margin="0 0 1rem 0">
-            상태
-          </Font>
+        <Font fontSize="2rem" margin="0 0 1.5rem 0">
+          상태
+        </Font>
 
-          <FilterWrapper>
-            {filterMenu?.statusMenu?.map((x) => {
-              const isExist = statusFilter?.find((y) => y === x) || false;
+        <FilterWrapper>
+          {filterMenu?.statusMenu?.map((x) => {
+            const isExist = statusFilter?.find((y) => y === x) || false;
 
-              return (
-                <li key={x}>
-                  <FilterLabel>
-                    <input
-                      type="checkbox"
-                      id={`status${x}`}
-                      name={`status${x}`}
-                      onChange={(e) => {
-                        if (isExist) {
-                          setStatusFilter(() =>
-                            statusFilter.filter((k) => k !== x)
-                          );
-                        } else {
-                          setStatusFilter((prev) => [...prev, x]);
-                        }
-                      }}
-                      checked={isExist}
-                    />
+            return (
+              <li key={x}>
+                <FilterLabel>
+                  <input
+                    type="checkbox"
+                    id={`status${x}`}
+                    name={`status${x}`}
+                    onChange={(e) => {
+                      if (isExist) {
+                        setStatusFilter(() =>
+                          statusFilter.filter((k) => k !== x)
+                        );
+                      } else {
+                        setStatusFilter((prev) => [...prev, x]);
+                      }
+                    }}
+                    checked={isExist}
+                  />
 
-                    {x}
-                  </FilterLabel>
-                </li>
-              );
-            })}
-          </FilterWrapper>
+                  {x}
+                </FilterLabel>
+              </li>
+            );
+          })}
+        </FilterWrapper>
 
-          <Font fontSize="2rem" margin="3rem 0 1rem 0">
-            회사
-          </Font>
+        <Font fontSize="2rem" margin="3rem 0 1.5rem 0">
+          회사
+        </Font>
 
-          <FilterWrapper>
-            {filterMenu?.companyMenu?.map((x) => {
-              const isExist = companyFilter?.find((y) => y === x) || false;
+        <FilterWrapper>
+          {filterMenu?.companyMenu?.map((x) => {
+            const isExist = companyFilter?.find((y) => y === x) || false;
 
-              return (
-                <li key={x}>
-                  <FilterLabel htmlFor={`company${x}`}>
-                    <input
-                      type="checkbox"
-                      id={`company${x}`}
-                      name={`company${x}`}
-                      onChange={(e) => {
-                        if (isExist) {
-                          setCompanyFilter(() =>
-                            companyFilter.filter((k) => k !== x)
-                          );
-                        } else {
-                          setCompanyFilter((prev) => [...prev, x]);
-                        }
-                      }}
-                      checked={isExist}
-                    />
-                    {x}
-                  </FilterLabel>
-                </li>
-              );
-            })}
-          </FilterWrapper>
+            return (
+              <li key={x}>
+                <FilterLabel htmlFor={`company${x}`}>
+                  <input
+                    type="checkbox"
+                    id={`company${x}`}
+                    name={`company${x}`}
+                    onChange={(e) => {
+                      if (isExist) {
+                        setCompanyFilter(() =>
+                          companyFilter.filter((k) => k !== x)
+                        );
+                      } else {
+                        setCompanyFilter((prev) => [...prev, x]);
+                      }
+                    }}
+                    checked={isExist}
+                  />
+                  {x}
+                </FilterLabel>
+              </li>
+            );
+          })}
+        </FilterWrapper>
 
-          <Font fontSize="2rem" margin="3rem 0 1rem 0">
-            주식 수
-          </Font>
+        <Font fontSize="2rem" margin="3rem 0 1.5rem 0">
+          주식 수
+        </Font>
 
-          <FilterWrapper>
-            <input
-              type="number"
-              onChange={(e) => {
-                setStocks((prev) => {
-                  return {
-                    ...prev,
-                    start: e.target.value,
-                  };
-                });
-              }}
-            />
+        <FilterWrapper>
+          <input
+            type="number"
+            onChange={(e) => {
+              setStocks((prev) => {
+                return {
+                  ...prev,
+                  start: e.target.value,
+                };
+              });
+            }}
+          />
 
-            <div>~</div>
+          <Font fontSize="1.5rem">~</Font>
 
-            <input
-              type="number"
-              onChange={(e) => {
-                setStocks((prev) => {
-                  return {
-                    ...prev,
-                    end: e.target.value,
-                  };
-                });
-              }}
-            />
-          </FilterWrapper>
+          <input
+            type="number"
+            onChange={(e) => {
+              setStocks((prev) => {
+                return {
+                  ...prev,
+                  end: e.target.value,
+                };
+              });
+            }}
+          />
+        </FilterWrapper>
 
-          <Font
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
             fontSize="2rem"
+            backgroundColor="#5599FF"
+            border="1px solid #5599FF"
+            color="#fff"
+            margin="6rem 0 0 0"
+            cursor="pointer"
             onClick={() => {
               excelDataRefetch();
               completedFilterMakerDataRefetch();
               setIsFilterModalOpen(false);
             }}
-            margin="6rem 0 0 0"
-            cursor="pointer"
           >
             적용하기
-          </Font>
-        </FilterFrame>
+          </Button>
+        </div>
       </Modal>
 
       {/* 지도 */}
@@ -259,22 +265,10 @@ const Home = () => {
         <ZoomControl position={"RIGHT"} />
 
         {/* 주소 검색 */}
-
-        <SearchAddressWrapper>
-          <input
-            type="text"
-            onChange={(e) =>
-              setSearchAddress((prev) => {
-                return { ...prev, keyWord: e.target.value };
-              })
-            }
-          />
-
-          <SearchAddressBounds
-            searchAddress={searchAddress}
-            setSearchAddress={setSearchAddress}
-          />
-        </SearchAddressWrapper>
+        <SearchAddressBounds
+          searchAddress={searchAddress}
+          setSearchAddress={setSearchAddress}
+        />
 
         {/* 마커 생성 */}
         {mapLevel >= 7 &&
@@ -306,11 +300,6 @@ const Home = () => {
 
 export default Home;
 
-const FilterFrame = styled.div`
-  width: 30rem;
-  height: 20rem;
-`;
-
 const FilterWrapper = styled.ul`
   display: flex;
   align-items: center;
@@ -320,6 +309,17 @@ const FilterWrapper = styled.ul`
 const FilterLabel = styled.label`
   display: flex;
   align-items: center;
+  font-size: 1.5rem;
+`;
+
+const SpinnerFrame = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 const FilterBtn = styled.div`
@@ -331,24 +331,17 @@ const FilterBtn = styled.div`
   font-weight: 700;
 
   position: fixed;
-  left: 20px;
-  top: 20px;
+  left: 2rem;
+  top: 2rem;
+  /* left: 20px;
+  top: 20px; */
+
   padding: 2rem;
   border: 1px #000 solid;
   border-radius: 10px;
   background-color: #fff;
-  z-index: 100;
+  z-index: 5;
   cursor: pointer;
-`;
-
-const SpinnerFrame = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9998;
-  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 const CompletedStocksWrapper = styled.div`
@@ -357,27 +350,15 @@ const CompletedStocksWrapper = styled.div`
   gap: 1rem;
 
   position: fixed;
-  left: 120px;
-  top: 20px;
+  left: 12rem;
+  top: 2rem;
+  /* left: 12px;
+  top: 20px; */
+
   padding: 1rem;
   border: 1px #000 solid;
   border-radius: 10px;
   background-color: #fff;
-  z-index: 100;
-  cursor: pointer;
-`;
-
-const SearchAddressWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-
-  position: fixed;
-  left: 380px;
-  top: 20px;
-  padding: 1rem;
-  border: 1px #000 solid;
-  border-radius: 10px;
-  background-color: #fff;
-  z-index: 100;
+  z-index: 5;
   cursor: pointer;
 `;

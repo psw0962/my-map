@@ -1,9 +1,11 @@
 import { useMap } from "react-kakao-maps-sdk";
 import Button from "@/component/button";
+import styled from "styled-components";
+import useDebounce from "@/hooks/useDebounce";
+import { useEffect } from "react";
 
 const SearchAddressBounds = ({ searchAddress, setSearchAddress }) => {
-  // input이 onChange될 때 마다 위도 경도를 불러와서 setState를 해줘야함....
-  console.log(searchAddress);
+  const debouncedSearch = useDebounce(searchAddress.keyWord, 500);
 
   // 맵
   const map = useMap();
@@ -14,10 +16,10 @@ const SearchAddressBounds = ({ searchAddress, setSearchAddress }) => {
   // 바운스 함수
   const bounds = new kakao.maps.LatLngBounds();
 
-  const onClickSearchAddress = () => {
+  // 위도 경도 onChange
+  const onChangeSearchAddress = () => {
     // 키워드로 검색 함수
     const placesSearchCB = (data, status) => {
-      console.log("키워드로", status);
       if (status === kakao.maps.services.Status.OK) {
         new kakao.maps.LatLngBounds();
         setSearchAddress((prev) => {
@@ -31,8 +33,7 @@ const SearchAddressBounds = ({ searchAddress, setSearchAddress }) => {
     };
 
     // 주소로 검색 함수
-    geocoder.addressSearch(searchAddress.keyWord, function (result, status) {
-      console.log("주소로", status);
+    geocoder.addressSearch(debouncedSearch, function (result, status) {
       if (status === kakao.maps.services.Status.OK) {
         setSearchAddress((prev) => {
           return {
@@ -42,31 +43,67 @@ const SearchAddressBounds = ({ searchAddress, setSearchAddress }) => {
           };
         });
       } else {
-        ps.keywordSearch(searchAddress.keyWord, placesSearchCB);
+        ps.keywordSearch(debouncedSearch, placesSearchCB);
       }
     });
+  };
 
+  // 디바운스 클릭 이벤트
+  const onClickboundsData = () => {
     const boundsData = bounds.extend(
       new kakao.maps.LatLng(searchAddress.lat, searchAddress.lng)
     );
-
     map.setBounds(boundsData);
   };
 
+  // 디바운스 객체가(검색어가 0.5초 늦게적용) 바뀔 때마다 위도 경도 API 호출
+  useEffect(() => {
+    if (debouncedSearch !== "") {
+      onChangeSearchAddress();
+    }
+  }, [debouncedSearch]);
+
   return (
-    <>
+    <SearchAddressWrapper>
+      <input
+        type="text"
+        onChange={(e) => {
+          setSearchAddress((prev) => {
+            return { ...prev, keyWord: e.target.value };
+          });
+        }}
+      />
+
       <Button
         fontSize="2rem"
         backgroundColor="#5599FF"
         border="1px solid #5599FF"
         color="#fff"
         padding="0.5rem"
-        onClick={() => onClickSearchAddress()}
+        onClick={() => onClickboundsData()}
       >
         주소검색
       </Button>
-    </>
+    </SearchAddressWrapper>
   );
 };
 
 export default SearchAddressBounds;
+
+const SearchAddressWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+
+  position: fixed;
+  left: 38rem;
+  top: 2rem;
+  /* left: 380px;
+  top: 20px; */
+
+  padding: 1rem;
+  border: 1px #000 solid;
+  border-radius: 10px;
+  background-color: #fff;
+  z-index: 5;
+  cursor: pointer;
+`;
