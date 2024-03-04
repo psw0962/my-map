@@ -15,7 +15,7 @@ import styled from "styled-components";
 import FilterModalChildren from "@/component/modal-children/filter-modal-children";
 
 const Home = () => {
-  // 현재 지도 확대 레벨
+  // 현재 지도 확대 레벨.
   const [mapLevel, setMapLevel] = useState(4);
 
   // 필터 모달
