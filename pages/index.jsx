@@ -2,19 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Map, MapTypeControl, ZoomControl } from "react-kakao-maps-sdk";
 import SearchAddressBounds from "@/component/search-address-bounds";
 import CustomMapMarker from "@/component/custom-map-maker";
-import {
-  useGetExcel,
-  useGetUserInfo,
-  useGetCompletedFilterMaker,
-} from "@/api/supabase";
+import { useGetExcel, useGetCompletedFilterMaker } from "@/api/supabase";
+import { useGetUserData, usePostSignOut } from "@/api/auth";
 import Font from "@/component/font";
 import Button from "@/component/button";
 import Modal from "@/component/modal";
 import GlobalSpinner from "@/component/global-spinner";
 import styled from "styled-components";
 import FilterModalChildren from "@/component/modal-children/filter-modal-children";
+import { toastStateAtom } from "atoms";
+import { useRecoilState } from "recoil";
+import { useRouter } from "next/router";
+import supabase from "@/config/supabaseClient";
+import withAuth from "@/hoc/withAuth";
 
 const Home = () => {
+  const router = useRouter();
+  const [toastState, setToastState] = useRecoilState(toastStateAtom);
+
   // 현재 지도 확대 레벨.
   const [mapLevel, setMapLevel] = useState(4);
 
@@ -40,7 +45,25 @@ const Home = () => {
   const [currCenter, setCurrCenter] = useState({ lat: 37.5665, lng: 126.978 });
 
   // 유저 정보
-  const { data: user } = useGetUserInfo();
+  const { data: user } = useGetUserData(setToastState, router);
+
+  // 로그아웃
+  const { mutate } = usePostSignOut(setToastState);
+
+  // 로그아웃 처리
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === "SIGNED_OUT") {
+          router.reload();
+        }
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   // 엑셀 데이터
   const {
@@ -135,6 +158,9 @@ const Home = () => {
         <MapTypeControl position={"TOPRIGHT"} />
         <ZoomControl position={"RIGHT"} />
 
+        {/* 로그아웃 */}
+        <SignOutBtn onClick={() => mutate()}>로그아웃</SignOutBtn>
+
         {/* 필터 버튼 */}
         <FilterBtn onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}>
           필터
@@ -169,7 +195,7 @@ const Home = () => {
                 key={x.id}
                 excelData={excelData}
                 makerData={x}
-                userId={user?.email}
+                userId={user && user.user?.email}
               />
             );
           })}
@@ -180,7 +206,7 @@ const Home = () => {
                 key={x.id}
                 excelData={excelData}
                 makerData={x}
-                userId={user?.email}
+                userId={user && user.user?.email}
               />
             );
           })}
@@ -189,7 +215,7 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default withAuth(Home);
 
 const SpinnerFrame = styled.div`
   position: fixed;
@@ -232,6 +258,27 @@ const CompletedStocksWrapper = styled.div`
   top: 7.5rem;
 
   padding: 1rem;
+  border: 1px #000 solid;
+  border-radius: 10px;
+  background-color: #fff;
+  z-index: 5;
+  cursor: pointer;
+`;
+
+const SignOutBtn = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.5rem;
+  font-weight: 700;
+
+  position: fixed;
+  right: 13rem;
+  top: 0.5rem;
+
+  height: 5rem;
+  padding: 2rem;
   border: 1px #000 solid;
   border-radius: 10px;
   background-color: #fff;

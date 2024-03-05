@@ -9,6 +9,8 @@ import { convertQueryString } from "@/function/convert-query-string";
 const getExcel = async (queryString, mapLevel) => {
   const { data, error } = await convertQueryString(queryString, mapLevel);
 
+  if (error) throw new Error(error);
+
   return data;
 };
 
@@ -40,7 +42,13 @@ const patchExcel = async (excelId, userId, patchData) => {
       history: newArr,
     };
 
-    await supabase.from("excel").update(result).eq("id", excelId).select();
+    const { error } = await supabase
+      .from("excel")
+      .update(result)
+      .eq("id", excelId)
+      .select();
+
+    if (error) throw new Error(error);
 
     return;
   } else {
@@ -50,7 +58,14 @@ const patchExcel = async (excelId, userId, patchData) => {
       history: [makeHistory],
     };
 
-    await supabase.from("excel").update(result).eq("id", excelId).select();
+    const { error } = await supabase
+      .from("excel")
+      .update(result)
+      .eq("id", excelId)
+      .select();
+
+    if (error) throw new Error(error);
+
     return;
   }
 };
@@ -75,6 +90,8 @@ export const usePatchExcel = (excelId, userId) => {
 // =======================================
 const getFilterMenu = async () => {
   const { data, error } = await supabase.from("excel").select();
+
+  if (error) throw new Error(error);
 
   const statusArray = data?.map((item) => item.status);
   const companyMenuArray = data?.map((item) => item.company);
@@ -107,6 +124,8 @@ export const useGetFilterMenu = () => {
 const getCompletedFilterMaker = async (queryString) => {
   const { data, error } = await convertQueryString(queryString);
 
+  if (error) throw new Error(error);
+
   const sumCompletedStocks = () => {
     const totalStocks = data
       .map((item) => item.stocks)
@@ -135,28 +154,4 @@ export const useGetCompletedFilterMaker = (queryString) => {
       },
     }
   );
-};
-
-// ================================================
-// ============== get 로그인한 유저 정보 ===================
-// ================================================
-const getUserInfo = async () => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  return user;
-};
-
-export const useGetUserInfo = () => {
-  return useQuery(["userInfo"], () => getUserInfo(), {
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    enabled: true,
-    staleTime: 1000 * 60 * 5,
-    onError: () => {
-      alert("네트워크 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.");
-    },
-  });
 };

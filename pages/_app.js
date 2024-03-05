@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { RecoilRoot } from "recoil";
 import usePageLoading from "hooks/usePageLoading";
 import GlobalSpinner from "@/component/global-spinner";
+import Toast from "@/component/toast";
 
 const App = ({ Component, pageProps }) => {
   const [queryClient] = useState(() => new QueryClient());
@@ -37,7 +38,10 @@ const App = ({ Component, pageProps }) => {
                 dotColor="#8536FF"
               />
             ) : (
-              <Component {...pageProps} />
+              <>
+                <Toast />
+                <Component {...pageProps} />
+              </>
             )}
           </RecoilRoot>
         </Hydrate>
