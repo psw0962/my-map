@@ -39,8 +39,9 @@ const SignIn = () => {
         <FormWrapper>
           <StyledInput
             type="text"
+            name="email"
             value={email || ""}
-            placeholder="아이디"
+            placeholder="이메일"
             onChange={(e) => setEmail(e.target.value)}
           />
 
@@ -48,7 +49,6 @@ const SignIn = () => {
             type="password"
             value={password || ""}
             placeholder="비밀번호"
-            autoComplete="off"
             onChange={(e) => setPassword(e.target.value)}
             onKeyUp={(e) => {
               if (e.key === "Enter") {
