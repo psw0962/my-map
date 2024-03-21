@@ -21,13 +21,13 @@ export const convertQueryString = (queryString, mapLevel) => {
 
   // 맵 확대 레벨 7 이하
   if (queryString.lat && queryString.lat !== "" && mapLevel <= 7) {
-    query = query.gte("lat", queryString.lat - 0.03);
-    query = query.lte("lat", queryString.lat + 0.03);
+    // query = query.gte("lat", queryString.lat - 0.0);
+    // query = query.lte("lat", queryString.lat + 0.0);
   }
 
   if (queryString.lng && queryString.lng !== "" && mapLevel <= 7) {
-    query = query.gte("lng", queryString.lng - 0.03);
-    query = query.lte("lng", queryString.lng + 0.03);
+    // query = query.gte("lng", queryString.lng - 0.0);
+    // query = query.lte("lng", queryString.lng + 0.0);
   }
 
   // 맵 확대 레벨 7이상 ~ 10이하
@@ -37,8 +37,8 @@ export const convertQueryString = (queryString, mapLevel) => {
     mapLevel >= 7 &&
     mapLevel <= 10
   ) {
-    query = query.gte("lat", queryString.lat - 0.07);
-    query = query.lte("lat", queryString.lat + 0.07);
+    // query = query.gte("lat", queryString.lat - 0.07);
+    // query = query.lte("lat", queryString.lat + 0.07);
   }
 
   if (
@@ -47,8 +47,8 @@ export const convertQueryString = (queryString, mapLevel) => {
     mapLevel >= 7 &&
     mapLevel <= 10
   ) {
-    query = query.gte("lng", queryString.lng - 0.07);
-    query = query.lte("lng", queryString.lng + 0.07);
+    // query = query.gte("lng", queryString.lng - 0.07);
+    // query = query.lte("lng", queryString.lng + 0.07);
   }
 
   // 맵 확대 레벨 11~14
@@ -58,8 +58,8 @@ export const convertQueryString = (queryString, mapLevel) => {
     mapLevel >= 10 &&
     mapLevel <= 14
   ) {
-    query = query.gte("lat", queryString.lat - 0.12);
-    query = query.lte("lat", queryString.lat + 0.12);
+    // query = query.gte("lat", queryString.lat - 0.12);
+    // query = query.lte("lat", queryString.lat + 0.12);
   }
 
   if (
@@ -68,8 +68,8 @@ export const convertQueryString = (queryString, mapLevel) => {
     mapLevel > 10 &&
     mapLevel <= 14
   ) {
-    query = query.gte("lng", queryString.lng - 0.1);
-    query = query.lte("lng", queryString.lng + 0.1);
+    // query = query.gte("lng", queryString.lng - 0.1);
+    // query = query.lte("lng", queryString.lng + 0.1);
   }
 
   return query;
