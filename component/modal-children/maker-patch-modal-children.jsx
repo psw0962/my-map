@@ -27,6 +27,13 @@ const MakerPatchModalChildren = ({
 
       <InfoWrapper>
         <Font fontSize="2.5rem" whiteSpace="nowrap">
+          주주번호 :
+        </Font>
+        <Font fontSize="2.5rem">{makerData.shareholder_number}</Font>
+      </InfoWrapper>
+
+      <InfoWrapper>
+        <Font fontSize="2.5rem" whiteSpace="nowrap">
           이름 :
         </Font>
         <Font fontSize="2.5rem">{makerData.name}</Font>
@@ -37,6 +44,13 @@ const MakerPatchModalChildren = ({
           주식수 :
         </Font>
         <Font fontSize="2.5rem">{makerData.stocks}</Font>
+      </InfoWrapper>
+
+      <InfoWrapper>
+        <Font fontSize="2.5rem" whiteSpace="nowrap">
+          작년권리확정주식수 :
+        </Font>
+        <Font fontSize="2.5rem">{makerData.last_year_stocks}</Font>
       </InfoWrapper>
 
       <InfoWrapper>

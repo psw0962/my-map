@@ -86,7 +86,7 @@ const FilterModalChildren = ({
       </FilterWrapper>
 
       <Font fontSize="2.5rem" margin="5.5rem 0 1.5rem 0">
-        주식 수
+        주식수
       </Font>
 
       <FilterWrapper>

@@ -21,13 +21,13 @@ export const convertQueryString = (queryString, mapLevel) => {
 
   // 맵 확대 레벨 7 이하
   if (queryString.lat && queryString.lat !== "" && mapLevel <= 7) {
-    query = query.gte("lat", queryString.lat - 0.02);
-    query = query.lte("lat", queryString.lat + 0.02);
+    query = query.gte("lat", queryString.lat - 0.03);
+    query = query.lte("lat", queryString.lat + 0.03);
   }
 
   if (queryString.lng && queryString.lng !== "" && mapLevel <= 7) {
-    query = query.gte("lng", queryString.lng - 0.02);
-    query = query.lte("lng", queryString.lng + 0.02);
+    query = query.gte("lng", queryString.lng - 0.03);
+    query = query.lte("lng", queryString.lng + 0.03);
   }
 
   // 맵 확대 레벨 7이상 ~ 10이하

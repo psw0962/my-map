@@ -177,7 +177,7 @@ const Home = () => {
           </Font>
 
           <Font fontSize="1.5rem">
-            주식 수의 합 : {completedFilterMakerData?.sumCompletedStocks}
+            주식수의 합 : {completedFilterMakerData?.sumCompletedStocks}
           </Font>
         </CompletedStocksWrapper>
 

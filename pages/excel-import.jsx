@@ -111,7 +111,7 @@ const ExcelImport = () => {
               if (status === "ZERO_RESULT") {
                 setFailData((prev) => [
                   ...prev,
-                  { address: x.address, code: x.code },
+                  { address: x.address, code: x.shareholder_number },
                 ]);
                 setFailCount((prev) => prev + 1);
               }
@@ -210,7 +210,7 @@ const ExcelImport = () => {
           return (
             <FailWrapper key={index}>
               <Font fontSize="2rem">실패</Font>
-              <Font fontSize="2rem">{x.code}</Font>
+              <Font fontSize="2rem">{x.shareholder_number}</Font>
               <Font fontSize="2rem">{x.address}</Font>
             </FailWrapper>
           );

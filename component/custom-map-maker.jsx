@@ -178,11 +178,23 @@ const CustomMapMarker = ({ excelData, makerData, userId }) => {
               />
 
               <InfoWrapper>
+                <Font fontSize="2.5rem">
+                  주주번호 : {makerData.shareholder_number}
+                </Font>
+              </InfoWrapper>
+
+              <InfoWrapper>
                 <Font fontSize="2.5rem">이름 : {makerData.name}</Font>
               </InfoWrapper>
 
               <InfoWrapper>
-                <Font fontSize="2.5rem">보유주식 수 : {makerData.stocks}</Font>
+                <Font fontSize="2.5rem">주식수 : {makerData.stocks}</Font>
+              </InfoWrapper>
+
+              <InfoWrapper>
+                <Font fontSize="2.5rem">
+                  작년권리확정주식수 : {makerData.last_year_stocks}
+                </Font>
               </InfoWrapper>
 
               <InfoWrapper>

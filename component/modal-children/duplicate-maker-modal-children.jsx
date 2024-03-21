@@ -14,7 +14,7 @@ const DuplicateMakerModalChildren = ({
       {findDuplicateLocation()?.map((x) => {
         return (
           <Button
-            key={x.code}
+            key={x.shareholder_number}
             fontSize="2.5rem"
             lineHeight={1.2}
             margin="1.5rem 0 0 0"
