@@ -151,12 +151,12 @@ const CustomMapMarker = ({ excelData, makerData, userId }) => {
             width: 40,
             height: 50,
           },
-          options: {
-            offset: {
-              x: 20,
-              y: 69,
-            },
-          },
+          // options: {
+          //   offset: {
+          //     x: 20,
+          //     y: 69,
+          //   },
+          // },
         }}
       >
         {/* 인포윈도우 */}
@@ -167,7 +167,7 @@ const CustomMapMarker = ({ excelData, makerData, userId }) => {
               lng: `${makerData.lng}`,
             }}
             clickable={true}
-            yAnchor={1.22}
+            yAnchor={1.1}
             zIndex={100}
           >
             <InfoWindow>
