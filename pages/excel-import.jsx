@@ -155,7 +155,7 @@ const ExcelImport = () => {
 
           // 모든 작업이 끝나면
           if (batchIndex >= totalBatches - 1) {
-            // 최초 업로드한 배열의 길이와 작업 후의 배열의 길이가 다르면 DB 업로드 X
+            // 최초 업로드한 배열의 길이와 작업 후의 배열의 길이가 다르면 DB 업로드X
             if (result.length !== addresses.length) {
               alert(
                 "주소 변환에 실패한 주소가 있습니다. 수정 후 다시 업로드 해주세요."
