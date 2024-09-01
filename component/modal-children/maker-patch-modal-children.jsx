@@ -13,6 +13,7 @@ const MakerPatchModalChildren = ({
     return str?.replace(/<\/?[^>]+(>|$)/g, "");
   };
 
+
   return (
     <>
       <Button
@@ -20,79 +21,78 @@ const MakerPatchModalChildren = ({
         fontSize="2.5rem"
         color="#000"
         padding="0.5rem"
-        borderRadius="5px"
+        $borderRadius="5px"
       >
         {`현재`}
       </Button>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           주주번호 :
         </Font>
         <Font fontSize="2.5rem">{makerData.shareholder_number}</Font>
       </InfoWrapper>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           이름 :
         </Font>
         <Font fontSize="2.5rem">{makerData.name}</Font>
       </InfoWrapper>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           주식수 :
         </Font>
         <Font fontSize="2.5rem">{makerData.stocks}</Font>
       </InfoWrapper>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           작년권리확정주식수 :
         </Font>
         <Font fontSize="2.5rem">{makerData.last_year_stocks}</Font>
       </InfoWrapper>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           주소 :
         </Font>
-        <Font fontSize="2.5rem" lineHeight={1.4}>
+        <Font fontSize="2.5rem" $lineHeight={1.4}>
           {makerData.address}
         </Font>
       </InfoWrapper>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           상태 :
         </Font>
         <Font fontSize="2.5rem">{makerData.status}</Font>
       </InfoWrapper>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           회사 :
         </Font>
         <Font fontSize="2.5rem">{makerData.company}</Font>
       </InfoWrapper>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           메모 :
         </Font>
         <Font fontSize="2.5rem">{makerData.memo}</Font>
       </InfoWrapper>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           변경이력 :
         </Font>
 
         <div
           style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}
         >
-          {makerData?.history !== null &&
-            makerData?.history?.map((x) => {
+          {makerData?.history?.map((x) => {
               return (
                 <Font key={x} fontSize="2.5rem">
                   {x}
@@ -109,13 +109,13 @@ const MakerPatchModalChildren = ({
         fontSize="2.5rem"
         color="#000"
         padding="0.5rem"
-        borderRadius="5px"
+        $borderRadius="5px"
       >
         {`수정`}
       </Button>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           상태 :
         </Font>
 
@@ -139,7 +139,7 @@ const MakerPatchModalChildren = ({
       </InfoWrapper>
 
       <InfoWrapper>
-        <Font fontSize="2.5rem" whiteSpace="nowrap">
+        <Font fontSize="2.5rem" $whiteSpace="nowrap">
           메모 :
         </Font>
 
@@ -160,7 +160,7 @@ const MakerPatchModalChildren = ({
         <Button
           fontSize="2.5rem"
           margin="4rem 0 0 0"
-          backgroundColor="#5599FF"
+          $backgroundColor="#5599FF"
           border="1px solid #5599FF"
           color="#fff"
           onClick={() => {

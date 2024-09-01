@@ -6,10 +6,10 @@ const Button = ({
   fontSize,
   border,
   padding,
-  borderRadius,
-  backgroundColor,
+  $borderRadius,
+  $backgroundColor,
   color,
-  lineHeight,
+  $lineHeight,
   onClick,
   children,
 }) => {
@@ -19,11 +19,11 @@ const Button = ({
       width={width}
       fontSize={fontSize}
       border={border}
-      borderRadius={borderRadius}
+      $borderRadius={$borderRadius}
       padding={padding}
-      backgroundColor={backgroundColor}
+      $backgroundColor={$backgroundColor}
       color={color}
-      lineHeight={lineHeight}
+      $lineHeight={$lineHeight}
       onClick={onClick}
     >
       {children}
@@ -37,12 +37,12 @@ const ButtonComp = styled.div`
   margin: ${(props) => props.margin && props.margin};
   border: ${(props) => (props.border ? props.border : "1px solid #000")};
   border-radius: ${(props) =>
-    props.borderRadius ? props.borderRadius : "10px"};
+    props.$borderRadius ? props.$borderRadius : "10px"};
   padding: ${(props) => (props.padding ? props.padding : "1rem")};
   background-color: ${(props) =>
-    props.backgroundColor ? props.backgroundColor : "#fff"};
+    props.$backgroundColor ? props.$backgroundColor : "#fff"};
   color: ${(props) => (props.color ? props.color : "#000")};
-  line-height: ${(props) => (props.lineHeight ? props.lineHeight : 1.2)};
+  line-height: ${(props) => (props.$lineHeight ? props.$lineHeight : 1.2)};
   cursor: pointer;
 `;
 

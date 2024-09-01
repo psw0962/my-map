@@ -76,9 +76,9 @@ const SearchAddressBounds = ({ searchAddress, setSearchAddress }) => {
 
       <Button
         fontSize="1.5rem"
-        backgroundColor="#5599FF"
+        $backgroundColor="#5599FF"
         border="1px solid #5599FF"
-        borderRadius="5px"
+        $borderRadius="5px"
         color="#fff"
         padding="0.5rem"
         onClick={() => onClickboundsData()}

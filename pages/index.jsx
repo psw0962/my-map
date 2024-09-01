@@ -82,6 +82,7 @@ const Home = () => {
     mapLevel
   );
 
+
   // 현재 필터 상황
   const {
     data: completedFilterMakerData,
@@ -168,7 +169,7 @@ const Home = () => {
 
         {/* 필터 현황 */}
         <CompletedStocksWrapper>
-          <Button fontSize="1.5rem" padding="0.5rem" borderRadius="5px">
+          <Button fontSize="1.5rem" padding="0.5rem" $borderRadius="5px">
             필터 현황
           </Button>
 
@@ -188,7 +189,7 @@ const Home = () => {
         />
 
         {/* 마커 생성 */}
-        {mapLevel >= 7 &&
+        {/* {mapLevel >= 7 &&
           excelData?.slice(0, 50)?.map((x) => {
             return (
               <CustomMapMarker
@@ -201,6 +202,17 @@ const Home = () => {
           })}
         {mapLevel < 7 &&
           excelData?.map((x) => {
+            return (
+              <CustomMapMarker
+                key={x.id}
+                excelData={excelData}
+                makerData={x}
+                userId={user && user.user?.email}
+              />
+            );
+          })} */}
+
+        {excelData?.map((x) => {
             return (
               <CustomMapMarker
                 key={x.id}

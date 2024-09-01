@@ -198,7 +198,7 @@ const CustomMapMarker = ({ excelData, makerData, userId }) => {
               </InfoWrapper>
 
               <InfoWrapper>
-                <Font fontSize="2.5rem" whiteSpace="pre-wrap" lineHeight={1.4}>
+                <Font fontSize="2.5rem" $whiteSpace="pre-wrap" $lineHeight={1.4}>
                   주소 :{makerData.address}
                 </Font>
               </InfoWrapper>
@@ -208,13 +208,13 @@ const CustomMapMarker = ({ excelData, makerData, userId }) => {
               </InfoWrapper>
 
               <InfoWrapper>
-                <Font fontSize="2.5rem" whiteSpace="pre-wrap">
+                <Font fontSize="2.5rem" $whiteSpace="pre-wrap">
                   회사명 : {makerData.company}
                 </Font>
               </InfoWrapper>
 
               <InfoWrapper>
-                <Font fontSize="2.5rem" whiteSpace="pre-wrap">
+                <Font fontSize="2.5rem" $whiteSpace="pre-wrap">
                   메모 : {makerData.memo}
                 </Font>
               </InfoWrapper>
@@ -229,8 +229,7 @@ const CustomMapMarker = ({ excelData, makerData, userId }) => {
                     gap: "0.3rem",
                   }}
                 >
-                  {makerData.history !== null &&
-                    makerData.history.map((x) => {
+                  {makerData?.history?.map((x) => {
                       return (
                         <Font key={x} fontSize="2.5rem">
                           {x}
@@ -243,7 +242,7 @@ const CustomMapMarker = ({ excelData, makerData, userId }) => {
               <Button
                 fontSize="2.5rem"
                 margin="4rem 0 0 0"
-                backgroundColor="#5599FF"
+                $backgroundColor="#5599FF"
                 border="1px solid #5599FF"
                 color="#fff"
                 onClick={() => setMakerDataUpdateIsModalOpen(patchDataState)}

@@ -120,7 +120,7 @@ const FilterModalChildren = ({
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Button
           fontSize="2.5rem"
-          backgroundColor="#5599FF"
+          $backgroundColor="#5599FF"
           border="1px solid #5599FF"
           color="#fff"
           margin="6rem 0 0 0"

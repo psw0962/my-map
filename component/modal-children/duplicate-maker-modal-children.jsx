@@ -16,7 +16,7 @@ const DuplicateMakerModalChildren = ({
           <Button
             key={x.shareholder_number}
             fontSize="2.5rem"
-            lineHeight={1.2}
+            $lineHeight={1.2}
             margin="1.5rem 0 0 0"
             onClick={() => {
               // 데이터 바인딩

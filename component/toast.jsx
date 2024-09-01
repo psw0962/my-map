@@ -23,7 +23,7 @@ const Toast = () => {
   }, [toastState]);
 
   return (
-    <Frame active={toastState.isOpen}>
+    <Frame $active={toastState.isOpen}>
       <Font size={16} color="#fff">
         {toastState.value}
       </Font>
@@ -34,10 +34,10 @@ const Toast = () => {
 export default Toast;
 
 const Frame = styled.div`
-  visibility: ${(props) => (props.active ? "visible" : "hidden")};
-  bottom: ${(props) => (props.active ? "12rem" : "-10rem")};
+  visibility: ${(props) => (props.$active ? "visible" : "hidden")};
+  bottom: ${(props) => (props.$active ? "12rem" : "-10rem")};
   transition: all 0.3s;
-  /* opacity: ${(props) => (props.active ? 1 : 0)}; */
+  /* opacity: ${(props) => (props.$active ? 1 : 0)}; */
 
   display: flex;
   justify-content: center;
