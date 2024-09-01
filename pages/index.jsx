@@ -83,7 +83,7 @@ const Home = () => {
   );
 
 
-  // 현재 필터 상황
+  // 현재 필터
   const {
     data: completedFilterMakerData,
     refetch: completedFilterMakerDataRefetch,
